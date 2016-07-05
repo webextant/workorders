@@ -1,0 +1,2 @@
+<!-- jQuery -->
+<script src="js/jquery.validate.min.js"></script>

@@ -1,0 +1,14 @@
+input[type=checkbox] {
+  position: relative !important;
+  margin-left: 0px !important;
+}
+label {
+  font-weight: normal !important;
+}
+.save-btn-wrap,
+.view-xml {
+  display: none;
+}
+.dev-mode-link {
+  display: none;
+}
