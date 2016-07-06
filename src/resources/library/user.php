@@ -55,7 +55,38 @@
             $user = $stmt->fetch(PDO::FETCH_CLASS);
             return $user;
         }
-        function SelectAll($limit = 100)
+        
+		
+		/***********************
+		SelectByPeram
+		Allows custom perameters based on
+		(Userid, currentApprover etc ... json format)
+		"FIELD|OPERATOR":VALUE, NEXT...
+		createdBy|=me@domain.com
+		***********************/
+		function SelectWhereJSON($whereArray, $limit = 5000)
+        {
+            $requirements = '';
+			if($whereArray <> ''){
+				$requirements = 'WHERE ';
+				foreach($whereArray as $var => $value){
+					$var_exp = explode("|",$var);
+					//echo $var_exp[0]." ". $var_exp[1]." ".$value."<br />";	
+					$requirements .= "AND ".$var_exp[0].$var_exp[1]."'".$value."' ";
+				}
+			}
+				$sql = "SELECT * FROM users  ".$requirements." ORDER BY user_name DESC";
+					$sql = str_replace('WHERE AND','WHERE',$sql);
+					//echo $sql;
+				$stmt = $this->conn->prepare($sql);
+				$stmt->setFetchMode(PDO::FETCH_CLASS, "User");
+				$stmt->execute();
+				$workorders = $stmt->fetchAll(PDO::FETCH_CLASS);
+				return $workorders;
+			
+        }
+		/***********************/
+		function SelectAll($limit = 100)
         {
             $sql = "SELECT user_name, user_email, user_group FROM users ORDER BY user_name DESC LIMIT :limit";
             $stmt = $this->conn->prepare($sql);

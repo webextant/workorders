@@ -1,4 +1,18 @@
 # CHANGE LOG
+
+**29 June 2016**
+
+* Improvement: Added DataTables JS and CSS to corresponding folders (js,css,img)
+* Improvement: created a User List section under admin
+	* Generated user list on screen
+* Improvement: Updated UserDataAdaptor to include dynamic jquery based function
+	* Modified function to allow with or without WHERE statement
+* Improvement: Created form Builder inside of page_content/ADMIN/forms_admin.php
+	* depreciated old page
+* Improvement: Created APPINFO table in databse for app specific information
+	* inserted a field with ACTION of Version and Value of 1.0.0
+* Improvement: Moved jquery.js reference to header in order to accomodate datatables functions for header_xxx.php files
+
 **25 June 2016**
 
 * Fix: Fixed error where I was “echo $sql” login.php
@@ -26,7 +40,6 @@
  * NOTE:  the page at /page_contents/WORKORDER/create.php is basically just including elements from createworkorder.php including 
   * Resources/librarty/dot.php
   * Includes/pageworkordersnew.php
-
 
 **11 June 2016**
 

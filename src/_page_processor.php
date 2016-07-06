@@ -201,7 +201,7 @@ if (isset($login)) {
                 <script src="js/jquery.js"></script>
             -->
                 <!-- Bootstrap Core JavaScript -->
-                <script src="js/jquery.js"></script>
+           
 
                 <!-- underscore -->
                 <script src="js/underscore-min.js"></script>

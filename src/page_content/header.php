@@ -6,5 +6,5 @@
     <meta name="author" content="">
 
     <title><?php echo Config::SiteTitleLong; ?></title>
-
-    <?php require_once('./includes/headlinks.php'); ?>
+    
+    <?php require_once('./includes/headlinks.php'); ?><script src="js/jquery.js"></script>

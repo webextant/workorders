@@ -32,3 +32,19 @@ CREATE TABLE IF NOT EXISTS `formsdb`.`Workorders` (
     updatedBy VARCHAR( 320 ) COMMENT 'Last user which updated the work order',
     notifyOnFinalApproval TEXT COMMENT 'CSV list of email addresses to notify on final approval',
     comments TEXT ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Workorder data generated from form definitions';
+
+CREATE TABLE IF NOT EXISTS `formsdb`.`groups` ( `GRP_id` INT NOT NULL AUTO_INCREMENT , `GRP_name` VARCHAR(50) NOT NULL COMMENT 'Currently GRP_id is not saved in users table GRP_name is' , PRIMARY KEY (`GRP_id`)) ENGINE = MyISAM;
+
+CREATE TABLE IF NOT EXISTS `formsdb`.`appinfo` (
+    `INFO_id` int(11) NOT NULL AUTO_INCREMENT,
+    `INFO_request` varchar(100) NOT NULL,
+    `INFO_value` varchar(100) NOT NULL,
+    PRIMARY KEY (`INFO_id`)
+    ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+    --
+    -- Dumping data for table `appinfo`
+    --
+
+    INSERT INTO `formsdb`.`appinfo` (`INFO_id`, `INFO_request`, `INFO_value`) VALUES
+    (1, 'System Version', '1.0');

@@ -39,19 +39,19 @@
             </li>
             <!-- Approver Center -->    
             <li  > <a style="color:#0DE447" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#APPROVERS"><i class="fa fa-fw fa-thumbs-up"></i>Approver Center<i class="fa fa-fw fa-caret-down"></i></a>
-                <ul id="APPROVERS" class="<?php if($active_nav_panel == "Approval_Center") echo "show"; else echo "collapse"; ?>">
-                    <li> <a href="#"><i class="fa fa-fw fa-thumbs-o-up"></i>Needs Approved</a> </li>
-                    <li> <a href="#"><i class="fa fa-fw fa-arrow-right"></i>Approvals In Progress</a> </li>
-                    <li> <a href="#"><i class="fa fa-fw fa-check"></i>Approved / Closed</a> </li>
+                <ul id="APPROVERS" class="<?php if($folder == "Approval_Center") echo "show"; else echo "collapse"; ?>">
+                    <li> <a href="?I=<?php echo pg_encrypt("APPROVAL-needs_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-thumbs-o-up"></i>Needs Approved</a> </li>
+                    <li> <a href="?I=<?php echo pg_encrypt("APPROVAL-pending_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-arrow-right"></i>Approvals In Progress</a> </li>
+                    <li> <a href="?I=<?php echo pg_encrypt("APPROVAL-closed_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-check"></i>Approved / Closed</a> </li>
                     
                 </ul>
             </li> 
             
             <!-- Admin Center -->    
             <li  > <a style="color:#F0FF00" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#ADMIN"><i class="fa fa-fw fa-cog"></i>Admin Center<i class="fa fa-fw fa-caret-down"></i></a>
-                <ul id="ADMIN" class="<?php if($active_nav_panel == "Admin_Center") echo "show"; else echo "collapse"; ?>">
-                    <li> <a href="forms.php"><i class="fa fa-fw fa-edit"></i>Form Builder</a> </li>
-                    <li> <!-- <a  tabindex="-1" href="#">User List </a> --></li>
+                <ul id="ADMIN" class="<?php if($folder == "ADMIN") echo "show"; else echo "collapse"; ?>">
+                    <li> <a href="?I=<?php echo pg_encrypt("ADMIN-forms_admin",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-edit"></i>Form Builder </a> </li>
+                    <li> <a  tabindex="-1"href="?I=<?php echo pg_encrypt("ADMIN-list_user",$pg_encrypt_key,"encode"); ?>">User List </a> </li>
                     <li id="settingsNavbarItem">
                     <!-- <a href="settings.php"><i class="fa fa-fw fa-wrench"></i> Settings</a> -->
                     </li> 
