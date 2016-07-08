@@ -75,7 +75,9 @@
         <!-- /.row -->
         <div class="row">
             <div id='save-form' class="col-lg-10">
-              <form class="form-horizontal" id="formsaveform" action="forms.php" method="post">
+              <form class="form-horizontal" id="formsaveform" action="index.php?I=<?php echo pg_encrypt("ADMIN-forms_admin",$pg_encrypt_key,"encode"); ?>" method="post">
+                             <input type="hidden" id="post_type" name="post_type" value="<?php echo pg_encrypt("qryADMIN-formbuild_qry",$pg_encrypt_key,"encode") ?>" />
+
                 <input id="id" name="id" type="hidden" value="<?php echo htmlspecialchars($_POST["id"]); ?>">
                 <input id="formname" name="formname" type="hidden" value="<?php echo htmlspecialchars($result['FormName']); ?>">
                 <input id="formdesc" name="formdesc" type="hidden" value="<?php echo htmlspecialchars($result['Description']); ?>">

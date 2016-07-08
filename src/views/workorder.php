@@ -1,4 +1,9 @@
 <?php
+    require_once('./resources/appconfig.php');
+    require_once("./resources/library/appinfo.php");
+    $appInfoDbAdapter = new AppInfo($dsn, $user_name, $pass_word);
+    $system_version =$appInfoDbAdapter->Get('System Version');
+
     $id = filter_var(trim($_GET['id']), FILTER_SANITIZE_STRING);
     $key = filter_var(trim($_GET['key']), FILTER_SANITIZE_STRING);
     if ($id == null || $key == null)

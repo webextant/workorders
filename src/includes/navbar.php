@@ -9,7 +9,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.php"><img src="./IMG/workorder.png" width="30px" style="float:left; margin-right:20px;"> <?php echo Config::SiteTitleShort; ?></a>
+        <a class="navbar-brand" href="index.php"><img src="./IMG/workorder.png" width="30px" style="float:left; margin-right:20px;"> <?php echo Config::SiteTitleShort." - version: "; ?><span style="color:#F98D04;"><?php echo $system_version['INFO_value']; ?></span></a>
     </div>
     <!-- Top Menu Items -->
     <ul class="nav navbar-right top-nav">
@@ -35,28 +35,47 @@
                 <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Home</a>
             </li>
             <li id="newWorkorderNavbarItem">
-                <a href="?I=<?php echo pg_encrypt("WORKORDER-create",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-file"></i> New Workorder</a>
+                <a href="index.php?I=<?php echo pg_encrypt("WORKORDER-create",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-file"></i> New Workorder</a>
             </li>
             <!-- Approver Center -->    
-            <li  > <a style="color:#0DE447" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#APPROVERS"><i class="fa fa-fw fa-thumbs-up"></i>Approver Center<i class="fa fa-fw fa-caret-down"></i></a>
-                <ul id="APPROVERS" class="<?php if($folder == "Approval_Center") echo "show"; else echo "collapse"; ?>">
-                    <li> <a href="?I=<?php echo pg_encrypt("APPROVAL-needs_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-thumbs-o-up"></i>Needs Approved</a> </li>
-                    <li> <a href="?I=<?php echo pg_encrypt("APPROVAL-pending_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-arrow-right"></i>Approvals In Progress</a> </li>
-                    <li> <a href="?I=<?php echo pg_encrypt("APPROVAL-closed_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-check"></i>Approved / Closed</a> </li>
+            <li  > <a style="color:#0DE447" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#APPROVAL"><i class="fa fa-fw fa-thumbs-up"></i>Approval Center<i class="fa fa-fw fa-caret-down"></i></a>
+                <ul id="APPROVAL" class="<?php if($folder == "APPROVAL") echo "show"; else echo "collapse"; ?>">
+                    <?php
+					   if($_SESSION['user_perms'] <=2){
+					?>
+                    <li> <a href="index.php?I=<?php echo pg_encrypt("APPROVAL-needs_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-thumbs-o-up"></i>Needs Approved</a> </li>
+                    <?php
+					   }
+					?>
+                    
+                    <li> <a href="index.php?I=<?php echo pg_encrypt("APPROVAL-pending_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-arrow-right"></i>Approvals In Progress</a> </li>
+                    <li> <a href="index.php?I=<?php echo pg_encrypt("APPROVAL-closed_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-check"></i>Closed / Workorders</a> </li>
                     
                 </ul>
             </li> 
-            
+            <?php
+			   if($_SESSION['user_perms'] == 1){
+			?>
             <!-- Admin Center -->    
             <li  > <a style="color:#F0FF00" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#ADMIN"><i class="fa fa-fw fa-cog"></i>Admin Center<i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="ADMIN" class="<?php if($folder == "ADMIN") echo "show"; else echo "collapse"; ?>">
-                    <li> <a href="?I=<?php echo pg_encrypt("ADMIN-forms_admin",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-edit"></i>Form Builder </a> </li>
-                    <li> <a  tabindex="-1"href="?I=<?php echo pg_encrypt("ADMIN-list_user",$pg_encrypt_key,"encode"); ?>">User List </a> </li>
+                    <li> <a href="index.php?I=<?php echo pg_encrypt("ADMIN-forms_admin",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-edit"></i>Form Builder </a> </li>
+                    <li> <a  tabindex="-1"href="index.php?I=<?php echo pg_encrypt("ADMIN-list_user",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-user"></i>User List </a> </li>
                     <li id="settingsNavbarItem">
                     <!-- <a href="settings.php"><i class="fa fa-fw fa-wrench"></i> Settings</a> -->
                     </li> 
                 </ul>
-            </li>    
+            </li> 
+            
+            <li  > <a style="color:#F0FF00" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#SETTINGS"><i class="fa fa-fw fa-cog"></i>Settings Center<i class="fa fa-fw fa-caret-down"></i></a>
+                <ul id="SETTINGS" class="<?php if($folder == "SETTINGS") echo "show"; else echo "collapse"; ?>">
+                    <li> <a href="index.php?I=<?php echo pg_encrypt("SETTINGS-registration_settings",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-cog"></i>Registration Settings</a> </li>
+                </ul>
+            </li>  
+            
+            <?php
+			   }
+			?>  
         </ul>
     </div>
    

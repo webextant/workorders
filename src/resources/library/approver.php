@@ -169,6 +169,15 @@
             }
             return $resultArray;
         }
+        /** verify first groupApprovers item is not empty and merge as needed. */
+        public static function MergeApproverArrays($groupApprovers, $approvers)
+        {
+            if (strlen($groupApprovers[0]->email) != 0) {
+                return array_merge($groupApprovers, $approvers);
+            } else {
+                return $approvers;
+            }
+        }
     }
     
     /** Approve State for Workorders */

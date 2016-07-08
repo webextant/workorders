@@ -27,16 +27,7 @@ above the container div.  This way the notification can be put within the contai
 	   
 		</div>
 		<?php	
-		$message = "<b>QUERY:</b> ".$add."\n";
-		$message .= "ERROR: ".$mysql_error."\n";
-		$message .= "---------------------------------------------- \n";
-		$message .= "PAGE: ".$post_page."\n";
-		$message .= "---------------------------------------------- \n";
-		$message .= "QUERY: ".$qry."\n";
-		$message .= "---------------------------------------------- \n";
-		//$message .= "GOAL_name: ".$GOAL_name."\n";
-		//$message .= "GOAL_description: ".$GOAL_description."\n";
-		mail($site_email,"Event Registration System Error:", $message);
+
 	}
 }else if(isset($errorMSG)){
 	echo $errorMSG;

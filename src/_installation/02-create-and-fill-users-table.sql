@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS `formsdb`.`users` (
   `user_group` varchar(64) COLLATE utf8_unicode_ci NOT NULL COMMENT 'group name user belongs to',
   `form_manager` boolean COLLATE utf8_unicode_ci NOT NULL default 0 COMMENT 'user can manage forms',
   `user_perms` TINYINT NOT NULL DEFAULT '3' COMMENT 'smaller=higher perms',
+  `user_fname` VARCHAR( 25 ) NOT NULL COMMENT  'First Name' AFTER  `user_name`,
+  `user_lname` VARCHAR( 25 ) NOT NULL COMMENT  'Last Name' AFTER  `user_fname`,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_name` (`user_name`),
   UNIQUE KEY `user_email` (`user_email`)
