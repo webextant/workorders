@@ -4,6 +4,13 @@ require_once("config/db.php");
 require_once("classes/Login.php");
 require_once('./resources/appconfig.php');
 
+require_once "./resources/library/appinfo.php";
+$appInfoDbAdapter = new AppInfo($dsn, $user_name, $pass_word);
+
+//appInfo->Set('RegDomain', $_POST['value here']);
+$system_version =$appInfoDbAdapter->Get('System Version');
+
+
 
 // checking for minimum PHP version
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
@@ -61,7 +68,7 @@ if (isset($login)) {
 			
 			if(isset($_POST['post_type'])){
 				//all post operators are found in the dbquery/index.php file
-				$post_page = $conn->real_escape_string($_POST['post_type']);
+				$post_page = $_POST['post_type'];
 				$post_page = pg_encrypt($post_page,$pg_encrypt_key,"decode");
 				$post_page = str_replace('-','/',$post_page);
 				include_once "dbquery/".$post_page.".php";

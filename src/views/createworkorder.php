@@ -1,3 +1,10 @@
+<?php
+    require_once('./resources/appconfig.php');
+    require_once("./resources/library/appinfo.php");
+    $appInfoDbAdapter = new AppInfo($dsn, $user_name, $pass_word);
+    $system_version =$appInfoDbAdapter->Get('System Version');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -69,7 +76,7 @@
                     $userGroupApproverArray = $groupWorkflows->$currentUserGroup;
                     $groupApprovers = ApproverHelper::NewApproverArrayFromEmailArray($userGroupApproverArray);
                     // merge the approver arrays with group first and create the workflow for the form
-                    $mergedApprovers = array_merge($groupApprovers, $approvers);
+                    $mergedApprovers = ApproverHelper::MergeApproverArrays($groupApprovers, $approvers);
                     $workflow =  new Workflow($formName . ' Workflow', $mergedApprovers);
                     
                     $wo = new Workorder();

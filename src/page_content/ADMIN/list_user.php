@@ -10,7 +10,7 @@ $usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word, $currentUserEm
 ?>
 
 		<section>
-			<h1>YOUR EVENTS</h1>
+			<h1>USER LIST</h1>
 			<div class="info">
 				<p>&nbsp;</p>
 			</div>
@@ -18,7 +18,8 @@ $usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word, $currentUserEm
 				<?php
 				$th_fields = "
 				<th>EMAIL</th>
-				<th>username</th>
+				<th>Fist</th>
+				<th>Last</th>
 				<th>ROLE</th>
 				<th>EDIT</th>
 				<th>Delete</th>
@@ -45,6 +46,8 @@ $usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word, $currentUserEm
 							$user_name = $value->user_name;
 							$user_email = $value->user_email;
 							$user_name= $value->user_name;
+							$user_fname= $value->user_fname;
+							$user_lname= $value->user_lname;
 							$user_id =$value->user_id;
 							$form_manager = $value->form_manager;
 							$user_perms =$value->user_perms;
@@ -60,7 +63,8 @@ $usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word, $currentUserEm
 							?>
                             <tr>
                                 <td><h4><?php echo $user_email ; ?></h4></td>
-                                <td><h4><?php echo $user_name; ?></h4></td>
+                                <td><h4><?php echo $user_fname; ?></h4></td>
+                                <td><h4><?php echo $user_lname; ?></h4></td>
                                 <td><?php echo $ROLE; ?></td>
                                 <td><h4><a class="btn btn-primary" style="width:100%" href="./?I=<?php echo pg_encrypt("ADMIN-edit_user|".$user_id,$pg_encrypt_key,"encode") ?>" />Edit User</a>
 </h4></td>

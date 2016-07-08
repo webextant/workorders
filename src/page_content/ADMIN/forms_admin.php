@@ -34,9 +34,11 @@
     <div class="row">
       <div class="col-lg-12">
         <?php
-          require "./resources/library/forms_db_controller.php";
+          
+		  require_once "./resources/library/forms_db_controller.php";
           // If post check post data and save/update form to db.
-          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+          /*
+		  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $formAvailable = 0;
             if (isset($_POST["formAvailable"])) { $formAvailable = 1; }
             if (isset($_POST["updateform"])){
@@ -53,9 +55,11 @@
               }
             }
           }
+		  */
           // Show all the forms in the db
           $fdc = new FormsDataController();
           $fdc->renderFormsList();
+		 
         ?>
       </div>
     </div>

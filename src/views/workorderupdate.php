@@ -2,7 +2,12 @@
     /**
     *    Updates workorder data with posted values.
     *    Requires valid approver key before update.
-    */
+   */
+
+    require_once('./resources/appconfig.php');
+    require_once("./resources/library/appinfo.php");
+    $appInfoDbAdapter = new AppInfo($dsn, $user_name, $pass_word);
+    $system_version =$appInfoDbAdapter->Get('System Version');
 
     $id = filter_var(trim($_POST['id']), FILTER_SANITIZE_STRING);
     $key = filter_var(trim($_POST['key']), FILTER_SANITIZE_STRING);

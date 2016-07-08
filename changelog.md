@@ -1,4 +1,20 @@
 # CHANGE LOG
+**7 July 2016**
+
+* Fix: Fixed menu issue when not on index.php
+* Improvement: Added a domain limiter section for admins that will be used to prevent non-authorized email addresses from registering for the system. (the later part has not been implemented but the databse and update form has been completed)
+* Improvement: Updated appinfo table in DB.  Set INFO_request to a unique field
+* Improvement: Created AppInfo class to handle database gets and sets to that table
+* set up sections allowing and Admin or Super user to see and approve items  that are still waiting (PendingApproval)
+
+**6 July 2016**
+
+* Fix: Fixed form.php post location error on form bulder
+* Fix: Updated links to approver page
+* Improvement: Incorporated post_type hidden input on form builder so POSTs are routed  through dbquery and provide success / failure feedback on submits
+* Improvement: incorporated RegDomin item into appinfo (INFO_request) field allowing admin to limit registration from specific domains
+* Improvement: updated navbar  to incorporate access permissions 
+* Improvement: Added First and Last Name fields to user table
 
 **29 June 2016**
 
