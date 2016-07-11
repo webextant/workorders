@@ -20,4 +20,3 @@ $QUERY_PROCESS = $appInfoDbAdapter->Set("RegDomain", $domain_list);
 
 
 ?>
-<!--

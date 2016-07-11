@@ -55,12 +55,23 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-3"></div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-12"></div>
+                    <div class="col-lg-12">
                         <h1 class="page-header">
                             <?php echo $wo->formName; ?>
                         </h1>
                         <ol class="breadcrumb">
+                           <?php
+								if ($login->isUserLoggedIn() == true) {
+					   				if($_SESSION['user_perms'] <=2){
+							?>
+                            <li class="">
+                                <i class="fa fa-fw fa-folder"></i><a href="index.php?I=<?php echo pg_encrypt("APPROVAL-needs_approval",$pg_encrypt_key,"encode"); ?>"> NEEDS APPROVAL</a>
+                            </li>
+                            <?php
+									}
+								}
+							?>
                             <li class="active">
                                 <i class="fa fa-fw fa-file"></i> <?php echo $woViewModel->workorderIdText; ?>
                             </li>

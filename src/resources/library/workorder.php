@@ -401,7 +401,7 @@
 			if($requirements !== ''){
 				$sql = "SELECT * FROM Workorders WHERE ".$requirements." ORDER BY createdAt DESC";
 					$sql = str_replace('WHERE AND','WHERE',$sql);
-					//echo $sql;
+				echo $sql."<br />";
 				$stmt = $this->conn->prepare($sql);
 				$stmt->setFetchMode(PDO::FETCH_CLASS, "Workorder");
 				$stmt->execute();
