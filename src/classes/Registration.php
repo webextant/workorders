@@ -82,6 +82,8 @@ class Registration
                 $user_name = $this->db_connection->real_escape_string(strip_tags($_POST['user_name'], ENT_QUOTES));
                 $user_email = $this->db_connection->real_escape_string(strip_tags($_POST['user_email'], ENT_QUOTES));
                 $user_group = $this->db_connection->real_escape_string(strip_tags($_POST['user_group_list'], ENT_QUOTES));
+                $user_fname = $this->db_connection->real_escape_string(strip_tags($_POST['user_first_name'], ENT_QUOTES));
+                $user_lname = $this->db_connection->real_escape_string(strip_tags($_POST['user_last_name'], ENT_QUOTES));
 
                 $user_password = $_POST['user_password_new'];
 
@@ -91,24 +93,33 @@ class Registration
                 $user_password_hash = password_hash($user_password, PASSWORD_DEFAULT);
 
                 // check if user or email address already exists
-                $sql = "SELECT * FROM users WHERE user_name = '" . $user_name . "' OR user_email = '" . $user_email . "';";
-			    $query_check_user_name = $this->db_connection->query($sql);
-
-                if ($query_check_user_name->num_rows == 1) {
-                    $this->errors[] = "Sorry, that username / email address is already taken.";
-                } else {
-                    // write new user's data into database
-                    $sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_group)
-                            VALUES('" . $user_name . "', '" . $user_password_hash . "', '" . $user_email . "', '".$user_group."');";
-				    $query_new_user_insert = $this->db_connection->query($sql);
-
-                    // if user has been added successfully
-                    if ($query_new_user_insert) {
-                        $this->messages[] = "<strong style='color:green'>Your account has been created successfully. You can now log in.</strong>";
-                    } else {
-                        $this->errors[] = "Sorry, your registration failed. Please go back and try again.";
-                    }
-                }
+                $explode_email = explode("@",$user_email);
+				
+				$check_domain = "select * from appinfo where INFO_request = 'RegDomain' and INFO_value like '%".$explode_email[1]."%'";
+				//echo $check_domain;
+				$query_check_domain = $this->db_connection->query($check_domain);
+				if($query_check_domain->num_rows >= 1){
+					$sql = "SELECT * FROM users WHERE user_name = '" . $user_name . "' OR user_email = '" . $user_email . "';";
+					$query_check_user_name = $this->db_connection->query($sql);
+	
+					if ($query_check_user_name->num_rows == 1) {
+						$this->errors[] = "Sorry, that username / email address is already taken.";
+					} else {
+						// write new user's data into database
+						$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_group, user_fname,user_lname)
+								VALUES('" . $user_name . "', '" . $user_password_hash . "', '" . $user_email . "', '".$user_group."','".$user_fname."','".$user_lname."');";
+						$query_new_user_insert = $this->db_connection->query($sql);
+	//echo $sql;
+						// if user has been added successfully
+						if ($query_new_user_insert) {
+							$this->messages[] = "<strong style='color:green'>Your account has been created successfully. You can now log in.</strong>";
+						} else {
+							$this->errors[] = "Sorry, your registration failed. Please go back and try again. error: ".__LINE__;
+						}
+					}
+				}else{
+					$this->errors[] = "<strong style='color:red'>Sorry you are not authorized to access this program.  If you think you have reached this message in error, please contact an admin</strong>";
+				}
             } else {
                 $this->errors[] = "Sorry, no database connection.";
             }
