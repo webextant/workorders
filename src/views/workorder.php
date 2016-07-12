@@ -17,11 +17,11 @@
     $wo = $woDbAdapter->Select($id);
     $woViewModel = new WorkorderViewModel($wo, $key);
 
-    $acceptBtnText = "Accept";
-    $rejectBtnText = "Reject";
+    $acceptBtnText = "APPROVE (not final)";
+    $rejectBtnText = "DENY";
     if ($woViewModel->isFinalApproval){
-        $acceptBtnText = "Completed";
-        $rejectBtnText = "Not Completed";
+        $acceptBtnText = "APPROVE (final)";
+        $rejectBtnText = "DENY";
         $finalApprovalHiddenClass = "hidden";
     }
 ?>
