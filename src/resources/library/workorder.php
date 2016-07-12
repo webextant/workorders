@@ -54,8 +54,8 @@
         public $stateColorClass;
         public $isFinalApproval;
         public $finalApproverEmail;
-        
-        private $formData;
+        public $formData;
+
         private $formXmlData;
         
         function __construct($workorder, $key)
@@ -161,13 +161,78 @@
             }
         }
         
-        private function GetFormXmlFieldLabelValue($fieldName)
+        public function GetFormXmlFieldLabelValue($fieldName)
         {
             $result = null;
             foreach ($this->formXmlData->fields[0]->field as $field) {
                 if ($field['name'] == $fieldName)
                 {
                    $result = $field['label'];
+                }
+            }
+            return $result;
+        }
+
+        public function GetFormXmlFieldInfo($fieldName, $fieldValue)
+        {
+            $result = null;
+            foreach ($this->formXmlData->fields[0]->field as $field) {
+                if ($field['name'] == $fieldName)
+                {
+                    $type = $field['type'];
+                    $result['name'] = $field['name'];
+                    $result['label'] = $field['label'];
+                    $result['type'] = $type;
+                    $result['required'] = $field['required'];
+                    // html
+                    $result['form_html'] = '<div>Unsupported element: '.$type.'</div>'; // Default. Unknown types
+
+                    if ($type == 'text' || $type == 'date' || $type == 'email' || $type == 'datetime')
+                    {
+                        $result['form_html'] = '<input id="'.$field['name'].'" name="'.$field['name'].'" type="'.$type.'" class="form-control" value="'.$fieldValue.'" placeholder="'.$field['label'].'">';
+                    }
+                    if ($type == 'textarea')
+                    {
+                        $result['form_html'] = '<textarea id="'.$field['name'].'" name="'.$field['name'].'" class="form-control" rows="3">'.$fieldValue.'</textarea>';
+                    }
+                    if ($type == 'FUTURE-checkbox-group')
+                    {
+                        $result['form_html'] = null; // clear default value first
+                        foreach ($field->option as $key => $value) {
+                            $optionValues[$key] = $value;
+                            if ($fieldValue == $value)
+                            {
+                                $selectedValue = $value;
+                                $checkedValue = 'checked';
+                            } else {
+                                $selectedValue = '';
+                                $checkedValue = '';
+                            }
+                            $result['form_html'] .= '<div class="checkbox"><label>';
+                            $result['form_html'] .= '<input id="'.$field['name'].'" name="'.$field['name'].'" type="checkbox" value="" '.$checkedValue.'>'.$value;
+                            $result['form_html'] .= '</label></div>';
+                        }
+                        $result['option-values'] = $optionValues;
+                    }
+                    if ($type == 'select')
+                    {
+                        $result['form_html'] = '<select id="'.$field['name'].'" name="'.$field['name'].'" class="form-control">';
+                        foreach ($field->option as $key => $value) {
+                            $optionValues[$key] = $value;
+                            if ($fieldValue == $value)
+                            {
+                                $selectedValue = $value;
+                                $checkedValue = 'selected';
+                            } else {
+                                $selectedValue = '';
+                                $checkedValue = '';
+                            }
+                            $result['form_html'] .= '<option value="'.$value.'" '.$checkedValue.'>'.$value.'</option>';
+                        }
+                        $result['form_html'] .= '</select>';
+                        $result['option-values'] = $optionValues;
+                    }
+
                 }
             }
             return $result;
