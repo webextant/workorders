@@ -1,4 +1,12 @@
 # CHANGE LOG
+**11 July 2016**
+
+* Update login script to restrict non-authorized domains
+* Update menu so it does not show if not logged in
+* Created 404.php error page.
+* Created Groups list where existing user groups can be viewed
+* Created New Group Page where admins can add new groups to the system (need to adjust security policy in Class groups.php)
+
 **7 July 2016**
 
 * Fix: Fixed menu issue when not on index.php

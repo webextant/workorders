@@ -37,7 +37,7 @@
             $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             try {
-                $sql = "SELECT * FROM FormDefinitions WHERE Available = 1";
+                $sql = "SELECT * FROM FormDefinitions WHERE Available = 1 ORDER by FormName ASC";
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
                 $form = $stmt->fetchAll();
@@ -60,7 +60,7 @@
                         echo "<td>" . $row["Description"] . "</td>";
                         $formid= $row["id"];
                         $workformid = "workform" . $formid;
-                        echo "<td><form id='$workformid' method='post' action='$createActionString'><input name='id' type='hidden' value='$formid'><a href='' onclick=\"document.getElementById('$workformid').submit();return false;\">Create Workorder</a></form></td>";
+                        echo "<td><form id='$workformid' method='post' action='$createActionString'><input name='id' type='hidden' value='$formid'><a href='' onclick=\"document.getElementById('$workformid').submit();return false;\" class='btn btn-primary'>Create Workorder</a></form></td>";
                     echo "</tr>"; // END TABLE ROW
                 }
                 echo "</tbody>";

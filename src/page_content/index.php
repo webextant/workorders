@@ -10,7 +10,10 @@
 <div id="page-wrapper">
   <div class="container-fluid">
     <h1>DASHBOARD</h1>
-    <div class="col-lg-3 col-md-6"> <a href="#">
+    <?php
+	   if($_SESSION['user_perms'] <=2){
+	?>
+    <div class="col-lg-3 col-md-6"> <a href="index.php?I=<?php echo pg_encrypt("APPROVAL-needs_approval",$pg_encrypt_key,"encode"); ?>">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <div class="row">
@@ -26,7 +29,10 @@
         </div>
       </div>
       </a> </div>
-    <div class="col-lg-3 col-md-6"> <a href="workordersnew.php">
+     <?php
+	   }
+	 ?> 
+    <div class="col-lg-3 col-md-6"> <a href="index.php?I=<?php echo pg_encrypt("WORKORDER-create",$pg_encrypt_key,"encode"); ?>">
       <div class="panel panel-green">
         <div class="panel-heading">
           <div class="row">
@@ -42,7 +48,8 @@
         </div>
       </div>
       </a> </div>
-    <div class="col-lg-3 col-md-6"> <a href="">
+      
+    <div class="col-lg-3 col-md-6"> <a href="index.php?I=<?php echo pg_encrypt("APPROVAL-pending_approval",$pg_encrypt_key,"encode"); ?>">
       <div class="panel panel-yellow">
         <div class="panel-heading">
           <div class="row">
@@ -58,7 +65,9 @@
         </div>
       </div>
       </a> </div>
+      
   </div>
+  
   <hr>
   <!-- Page Heading -->
   <div class="row">
