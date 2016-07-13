@@ -66,6 +66,18 @@
           <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
           </sub> </div>
         
+        <div class="control-group">
+          <input id="login_first_name" class="form-control" type="text" pattern="[a-zA-Z0-9]{2,64}" name="user_first_name" placeholder="First Name" required />
+          <br>
+          <sub>
+          </sub> </div>
+          
+          <div class="control-group">
+          <input id="login_last_name" class="form-control" type="text" pattern="[a-zA-Z0-9]{2,64}" name="user_last_name" placeholder="Last Name" required />
+          <br>
+          <sub>
+          </sub> </div>
+        
         <!-- the email input field uses a HTML5 email type check -->
         <div class="control-group">
           <input id="login_input_email" class="form-control" type="email" name="user_email" placeholder="Email Address" required />

@@ -5,16 +5,24 @@
     $currentUserEmail = $_SESSION['user_email'];
     $woDbAdapter = new WorkorderDataAdapter($dsn, $user_name, $pass_word, $currentUserEmail);
    // $workorders = $woDbAdapter->SelectAll(300);
+   	 $back_Date= date("Y-m-d", strtotime("-6 months", strtotime(date('Y-m-d')))); //2015-05-22 10:35:10
+
+   	 //$1_year_ago = date("Y-m-d H:i:s", strtotime("-1 years", strtotime(date('Y-m-d H:i:s')))); //2015-05-22 10:35:10
+
    if($_SESSION['user_perms'] >2){
 		$query_block = '"createdBy|=": "'.$currentUserEmail.'",';
    }
-	$where_perams = '{'.$query_block.'"approveState| like": "%closed"}';
+	$where_perams = '{'.$query_block.'"approveState| like": "%closed","createdAt| >": "'.$back_Date.'"}';
 	$where_object = json_decode($where_perams);
 	$workorders = $woDbAdapter->SelectWhereJSON($where_object);
+	
+
+
+
 ?>
 
 		<section>
-			<h1>CLOSED WORKORDERS</h1>
+			<h1>CLOSED WORKORDERS (<span style="color:#F98401">Since <?php echo $back_Date; ?></span>)</h1>
 			<div class="info">
 				<p>&nbsp;</p>
 			</div>
