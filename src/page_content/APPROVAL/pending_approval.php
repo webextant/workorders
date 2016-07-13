@@ -23,7 +23,6 @@
 				<th>Current Approver</th>
 				<th>Form Name</th>
             <th>Type</th>
-			<th>Edit</th>
 				";
 				?>
                 <thead>
@@ -52,7 +51,6 @@
                                 <td><h4><?php echo  $value->currentApprover; ?></h4></td>
                                 <td><h4><?php echo  $value->formName; ?></h4></td>
                                 <td><h4><?php echo "<a href='./workorderview.php?id=".$value->id."&key=" . $value->viewOnlyKey . "' class=\"btn btn-primary\">VIEW</a>"; ?></h4></td>
-                                <td><h4><a href="index.php?I=<?php echo pg_encrypt("WORKORDER-edit|".$value->id."|".$value->approverKey,$pg_encrypt_key,"encode"); ?>" class="btn btn-primary">EDIT</a></h4></td>
 							</tr>
                             <?php	
 						

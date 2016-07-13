@@ -3,6 +3,9 @@
     * Classes for working with Workorders
     * @author raymond.brady@webextant.com
     * @license MIT
+    *
+    * Updates:
+    *   RB 7/12/2016 - Now supports updating form data for a previously saved workorder.
     */
     
     /**
@@ -504,6 +507,16 @@
             $sql = "UPDATE Workorders SET formName = :formName, description = :description, formXml = :formXml, formData = :formData, currentApprover = :currentApprover, workflow = :workflow, approveState = :approveState, approverKey = :approverKey, viewOnlyKey = :viewOnlyKey, updatedAt = now(), updatedBy = :updatedBy, formId = :formId, notifyOnFinalApproval = :notifyOnFinalApproval, comments = :comments WHERE id = :id";
             $result = $this->conn->prepare($sql);
             $status = $result->execute(array('formName' => $workorder->formName, 'description' => $workorder->description, 'formXml' => $workorder->formXml, 'formData' => $workorder->formData, 'currentApprover' => $workorder->currentApprover, 'workflow' => $workorder->workflow, 'approveState' => $workorder->approveState, 'approverKey' => $workorder->approverKey, 'viewOnlyKey' => $workorder->viewOnlyKey, 'updatedBy' => $this->currentUserEmail, 'formId' => $workorder->formId, 'notifyOnFinalApproval' => $workorder->notifyOnFinalApproval, 'comments' => $workorder->comments, 'id' => $workorderId ));
+            return $status;
+        }
+        function UpdateFormData($workorderId, $formData)
+        {
+            if ($this->currentUserEmail == null) {
+                throw new Exception("Operation requires user.", 1);
+            }
+            $sql = "UPDATE Workorders SET formData = :formData, updatedAt = now(), updatedBy = :updatedBy WHERE id = :id";
+            $result = $this->conn->prepare($sql);
+            $status = $result->execute(array(':formData' => $formData, ':updatedBy' => $this->currentUserEmail, ':id' => $workorderId ));
             return $status;
         }
         function Delete($workorderId)
