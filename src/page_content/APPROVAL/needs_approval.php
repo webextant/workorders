@@ -26,6 +26,7 @@
             <th>Created By</th>
             <th>Approve / Reject</th>
             <th>Type</th>
+			<th>Edit</th>
 				";
 				?>
                 <thead>
@@ -55,6 +56,7 @@
                                 <!-- workorderview.php?id=13&key=6EAF159514D440656E37BD6924ECD446 -->
                                 <td><h4><?php echo "<a href='./workorderview.php?id=".$value->id."&key=" . $value->approverKey . "' class=\"btn btn-primary\">VIEW</a>"; ?></h4></td>
                                 <td><?php echo $value->formName; ?></td>
+                                <td><h4><a href="index.php?I=<?php echo pg_encrypt("WORKORDER-edit|".$value->id."|".$value->approverKey,$pg_encrypt_key,"encode"); ?>" class="btn btn-primary">EDIT</a></h4></td>
                                 
 							</tr>
                             <?php	
