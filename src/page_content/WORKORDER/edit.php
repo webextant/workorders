@@ -34,7 +34,7 @@ Date Created: 7/12/2016
         <div class="col-lg-3"></div>
         <div class="col-lg-6">
             <div class="<?=$woViewModel->stateColorClass?>"><?=$woViewModel->approveState?> (<?=$wo->currentApprover?>)</div>
-            <form action="./?I=<?=pg_encrypt('APPROVAL-needs_approval',$pg_encrypt_key,'encode')?>" method="post" enctype="multipart/form-data">
+            <form action="./?I=<?=pg_encrypt('WORKORDER-edit|'.$wo->id."|".$wo->approverKey,$pg_encrypt_key,'encode')?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" id="post_type" name="post_type" value="<?php echo pg_encrypt("qryWORKORDER-edit_workorder_qry",$pg_encrypt_key,"encode") ?>" />
                 <input type="hidden" id="form-xml-schema" name="form-xml-schema" value="<?=htmlspecialchars($wo->formXml)?>" />
                 <input type="hidden" id="form-name" name="form-name" value="<?=$wo->formName?>" />
@@ -47,7 +47,7 @@ Date Created: 7/12/2016
                         <?=$fieldInfo['form_html']?>
                     </div>
                 <?php } ?>
-               <button type="submit" class="btn btn-success">Save</button>
+               <button type="submit" class="btn btn-success">Save</button> <a class="btn btn-success" href="./workorderview.php?id=<?=$wo->id?>&key=<?=$wo->approverKey?>" >Approve / Deny</a>
             </form>
 
         </div>
