@@ -1,4 +1,12 @@
 # CHANGE LOG
+**15 July 2016**
+
+* Improvement: Added Edit button to workorder submit page
+* Improvement: Created a way to delete Groups (DELETE updates users in that group to another group as selected)
+* Improvement: Added User Group to the edit user page.  Submit is still broke
+* Improvement: Added User Group section to the User List under Admin
+* Fix: Fixed the Edit group section
+
 **11 July 2016**
 
 * Update login script to restrict non-authorized domains

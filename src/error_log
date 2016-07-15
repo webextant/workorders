@@ -1,0 +1,39 @@
+[15-Jul-2016 14:59:20 America/Los_Angeles] PHP Fatal error:  Uncaught exception 'Exception' with message 'Operation requires Group Name.' in /home/disdt0/public_html/workordertesting/resources/library/groups.php:58
+Stack trace:
+#0 /home/disdt0/public_html/workordertesting/dbquery/qryGROUP/delete_group_qry.php(11): groupDataAdapter->Delete('OgS|S|', NULL)
+#1 /home/disdt0/public_html/workordertesting/_page_processor.php(74): include_once('/home/disdt0/pu...')
+#2 /home/disdt0/public_html/workordertesting/index.php(36): include('/home/disdt0/pu...')
+#3 {main}
+  thrown in /home/disdt0/public_html/workordertesting/resources/library/groups.php on line 58
+[15-Jul-2016 15:10:21 America/Los_Angeles] PHP Fatal error:  Uncaught exception 'Exception' with message 'Operation requires Group Name.' in /home/disdt0/public_html/workordertesting/resources/library/groups.php:58
+Stack trace:
+#0 /home/disdt0/public_html/workordertesting/dbquery/qryGROUP/delete_group_qry.php(11): groupDataAdapter->Delete('7', '')
+#1 /home/disdt0/public_html/workordertesting/_page_processor.php(74): include_once('/home/disdt0/pu...')
+#2 /home/disdt0/public_html/workordertesting/index.php(36): include('/home/disdt0/pu...')
+#3 {main}
+  thrown in /home/disdt0/public_html/workordertesting/resources/library/groups.php on line 58
+[15-Jul-2016 15:11:35 America/Los_Angeles] PHP Fatal error:  Uncaught exception 'Exception' with message 'Operation requires Group Name.' in /home/disdt0/public_html/workordertesting/resources/library/groups.php:58
+Stack trace:
+#0 /home/disdt0/public_html/workordertesting/dbquery/qryGROUP/delete_group_qry.php(11): groupDataAdapter->Delete('7', '')
+#1 /home/disdt0/public_html/workordertesting/_page_processor.php(74): include_once('/home/disdt0/pu...')
+#2 /home/disdt0/public_html/workordertesting/index.php(36): include('/home/disdt0/pu...')
+#3 {main}
+  thrown in /home/disdt0/public_html/workordertesting/resources/library/groups.php on line 58
+[15-Jul-2016 15:20:24 America/Los_Angeles] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1' in /home/disdt0/public_html/workordertesting/resources/library/groups.php:68
+Stack trace:
+#0 /home/disdt0/public_html/workordertesting/resources/library/groups.php(68): PDO->prepare('Delete from gro...')
+#1 /home/disdt0/public_html/workordertesting/dbquery/qryGROUP/delete_group_qry.php(11): groupDataAdapter->Delete('7', '1')
+#2 /home/disdt0/public_html/workordertesting/_page_processor.php(74): include_once('/home/disdt0/pu...')
+#3 /home/disdt0/public_html/workordertesting/index.php(36): include('/home/disdt0/pu...')
+#4 {main}
+  thrown in /home/disdt0/public_html/workordertesting/resources/library/groups.php on line 68
+[15-Jul-2016 15:21:30 America/Los_Angeles] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1' in /home/disdt0/public_html/workordertesting/resources/library/groups.php:69
+Stack trace:
+#0 /home/disdt0/public_html/workordertesting/resources/library/groups.php(69): PDO->prepare('Delete from gro...')
+#1 /home/disdt0/public_html/workordertesting/dbquery/qryGROUP/delete_group_qry.php(11): groupDataAdapter->Delete('7', '1')
+#2 /home/disdt0/public_html/workordertesting/_page_processor.php(74): include_once('/home/disdt0/pu...')
+#3 /home/disdt0/public_html/workordertesting/index.php(36): include('/home/disdt0/pu...')
+#4 {main}
+  thrown in /home/disdt0/public_html/workordertesting/resources/library/groups.php on line 69
+[15-Jul-2016 15:25:09 America/Los_Angeles] PHP Warning:  include_once(dbquery/qryGROUP/edit_group_qry.php): failed to open stream: No such file or directory in /home/disdt0/public_html/workordertesting/_page_processor.php on line 74
+[15-Jul-2016 15:25:09 America/Los_Angeles] PHP Warning:  include_once(): Failed opening 'dbquery/qryGROUP/edit_group_qry.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/disdt0/public_html/workordertesting/_page_processor.php on line 74

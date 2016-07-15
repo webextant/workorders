@@ -1,5 +1,6 @@
 <?php
 require_once "./resources/library/user.php";
+
 $usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word, $currentUserEmail);
 
 $user_id = $header_GET_array[0];
@@ -8,12 +9,14 @@ $where_perams = '{"user_id| =": "'.$user_id.'"}';
 $where_object = json_decode($where_perams);
 
 $users = $usrDbAdapter->SelectWhereJSON($where_object);
-
+$userGroups = $usrDbAdapter->SelectUniqueGroupNames();
+//$user_group = 'aaa';
 	foreach ($users as $key => $value) {
 	//for($i=0;$i<mysqltng_num_rows($matrixList_res);$i++){
 		$user_name = $value->user_name;
 		$user_email = $value->user_email;
 		$user_name= $value->user_name;
+		$user_group= $value->user_group;
 		$user_fname= $value->user_fname;
 		$user_lname= $value->user_lname;
 		$user_id =$value->user_id;
@@ -48,6 +51,20 @@ $users = $usrDbAdapter->SelectWhereJSON($where_object);
               <input name="last_name" type="text" value="<?php echo $user_lname; ?>" class="form-control">
               <label>User email (also username)</label>
               <input name="user_email" type="email" value="<?php echo $user_email; ?>" class="form-control">
+              
+              <label>GROUPS</label>
+              <select id="register_group_list" class="form-control" name="user_group_list">
+                        <?php
+                            // Build the group tabs
+                            foreach ($userGroups as $key => $group) {
+								$selected = '';
+								if($user_group == $group->name){
+									$selected = 'selected';	
+								}
+                                echo '<option '.$selected.' value="'.$group->name . '">' . $group->name . '</option>';
+                            }
+                        ?>
+        	 </select>
               <label>User Role</label>
               <select required name="user_role" class="form-control">
              

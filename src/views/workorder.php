@@ -140,6 +140,7 @@
                             </div>
                             <button id="approve-btn" type="button" class="btn btn-success"><?php echo $acceptBtnText; ?></button>
                             <button id="reject-btn" type="button" class="btn btn-danger"><?php echo $rejectBtnText; ?></button>
+                            <a  href="index.php?I=<?php echo pg_encrypt("WORKORDER-edit|".$id."|".$key,$pg_encrypt_key,"encode"); ?>" type="button" class="btn btn-primary">Edit Workorder</a>
                         </form>
                     <?php } ?>
                         

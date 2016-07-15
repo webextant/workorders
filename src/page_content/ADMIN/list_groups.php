@@ -21,6 +21,7 @@ $groupDbAdapter = new groupDataAdapter($dsn, $user_name, $pass_word);
 				$th_fields = "
 				<th>Group Name</th>
 				<th>Edit</th>
+				<th>Delete</th>
 				";
 				?>
                 <thead>
@@ -52,7 +53,8 @@ $groupDbAdapter = new groupDataAdapter($dsn, $user_name, $pass_word);
                             <tr>
                                 <td><h4><?php echo $GRP_name; ?></h4></td>
                                 
-                                                                <td><h4><a class="btn btn-success" style="width:100%" href="./?I=<?php echo pg_encrypt("ADMIN-edit_group|".$GRP_id,$pg_encrypt_key,"encode") ?>" />Edit Group</a>
+                                <td><h4><a class="btn btn-success" style="width:100%" href="./?I=<?php echo pg_encrypt("ADMIN-edit_group|".$GRP_id,$pg_encrypt_key,"encode") ?>" />Edit Group</a>
+								<td><h4><a class="btn btn-danger" style="width:100%" href="./?I=<?php echo pg_encrypt("ADMIN-delete_group|".$GRP_id."|".$GRP_name,$pg_encrypt_key,"encode") ?>" />Delete Group</a>
 
 							</tr>
                             <?php	
