@@ -36,6 +36,18 @@
         <?php
           
 		  require_once "./resources/library/forms_db_controller.php";
+		  if (isset($_POST["deleteform"])) {
+              $fdc = new FormsDataController();
+              $result = $fdc->deleteForm($_POST["id"]);
+            }
+			
+		if (isset($_POST["addform"])) {
+              $fdc = new FormsDataController();
+              $result = $fdc->addForm($_POST["formname"], $_POST["formdesc"], $_POST["xmldata"], $_POST["workflow"], $_POST["notifyOnFinalApproval"], $formAvailable, $_POST["groupWorkflows"]);
+              if (!$result){
+                echo "<div class='alert alert-danger'>All fields are required. Keep calm and try again...</div>";
+              }
+            }
           // If post check post data and save/update form to db.
           /*
 		  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -57,7 +69,7 @@
           }
 		  */
           // Show all the forms in the db
-          $fdc = new FormsDataController();
+          $fdc = new FormsDataController( );
           $fdc->renderFormsList();
 		 
         ?>
