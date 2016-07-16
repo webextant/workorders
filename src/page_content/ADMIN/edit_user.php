@@ -41,19 +41,23 @@ $userGroups = $usrDbAdapter->SelectUniqueGroupNames();
           <div class="form-group">
             <form action="./?I=<?php echo $_GET['I']; ?>" method="post" enctype="multipart/form-data">
               <input type="hidden" id="post_type" name="post_type" value="<?php echo pg_encrypt("qryUSER-edit_user_qry",$pg_encrypt_key,"encode") ?>" />
-              <input type="hidden" name="useriD" value="<?php echo pg_encrypt($user_id.$general_seed,$pg_encrypt_key,"encode"); ?>">
+              <input type="hidden" name="userID" value="<?php echo pg_encrypt($user_id.$general_seed,$pg_encrypt_key,"encode"); ?>">
 
               <label>User Username</label>
-              <input name="username" type="text" value="<?php echo $user_name; ?>" class="form-control">
+              <input readonly name="username" type="text" value="<?php echo $user_name; ?>" class="form-control">
               <label>User First Name</label>
-              <input name="first_name" type="text" value="<?php echo $user_fname; ?>" class="form-control">
+              <input required name="first_name" type="text" value="<?php echo $user_fname; ?>" class="form-control">
               <label>User Last Name</label>
-              <input name="last_name" type="text" value="<?php echo $user_lname; ?>" class="form-control">
+              <input required name="last_name" type="text" value="<?php echo $user_lname; ?>" class="form-control">
               <label>User email (also username)</label>
-              <input name="user_email" type="email" value="<?php echo $user_email; ?>" class="form-control">
+              <input required name="user_email" type="email" value="<?php echo $user_email; ?>" class="form-control">
+              
+              
+              <label>PASSWORD (only edit if  changing)</label>
+              <input name="user_password" type="password" value="" class="form-control" placeholder="**********">
               
               <label>GROUPS</label>
-              <select id="register_group_list" class="form-control" name="user_group_list">
+              <select id="group_list" class="form-control" name="group_list">
                         <?php
                             // Build the group tabs
                             foreach ($userGroups as $key => $group) {
@@ -68,9 +72,9 @@ $userGroups = $usrDbAdapter->SelectUniqueGroupNames();
               <label>User Role</label>
               <select required name="user_role" class="form-control">
              
-                <option <?php if($user_perms == 3) echo "selected='selected'"; ?> value="1">STAFF</option>
+                <option <?php if($user_perms == 3) echo "selected='selected'"; ?> value="3">STAFF</option>
                 <option <?php if($user_perms == 2) echo "selected='selected'"; ?> value="2">ADMIN</option>
-                <option <?php if($user_perms == 1) echo "selected='selected'"; ?> value="3">SUPER</option>
+                <option <?php if($user_perms == 1) echo "selected='selected'"; ?> value="1">SUPER</option>
               </select>
               <button type="submit" class="btn btn-success">EDIT USER</button>
             </form>
