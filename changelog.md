@@ -1,4 +1,21 @@
 # CHANGE LOG
+**16 July 2016**
+
+* Fix: Fixed the query section of the update user page.  Now you can update user information
+	* Need to check on injection security here
+* Fix: Added functionality in $QUERY_PROCESS_SUB
+	* NOW if you: return "ERROR|$MESSAGE" Query process will display an error and the custom message you want to send
+	* IF you do not include the |$messasge it will just display a generic error
+	* Pages updated users.php groups.php (other classes may still need to be updated to show errors correctly)
+
+**15 July 2016**
+
+* Improvement: Added Edit button to workorder submit page
+* Improvement: Created a way to delete Groups (DELETE updates users in that group to another group as selected)
+* Improvement: Added User Group to the edit user page.  Submit is still broke
+* Improvement: Added User Group section to the User List under Admin
+* Fix: Fixed the Edit group section
+
 **11 July 2016**
 
 * Update login script to restrict non-authorized domains

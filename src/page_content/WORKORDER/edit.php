@@ -47,7 +47,7 @@ Date Created: 7/12/2016
                         <?=$fieldInfo['form_html']?>
                     </div>
                 <?php } ?>
-               <button type="submit" class="btn btn-success">Save</button> <a class="btn btn-success" href="./workorderview.php?id=<?=$wo->id?>&key=<?=$wo->approverKey?>" >Approve / Deny</a>
+               <button type="submit" class="btn btn-success">Save</button> <a class="btn btn-primary" href="./workorderview.php?id=<?=$wo->id?>&key=<?=$wo->approverKey?>" >Approve / Deny</a>
             </form>
 
         </div>

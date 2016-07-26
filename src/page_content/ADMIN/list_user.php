@@ -20,6 +20,7 @@ $usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word, $currentUserEm
 				<th>EMAIL</th>
 				<th>Fist</th>
 				<th>Last</th>
+				<th>GROUP</th>
 				<th>ROLE</th>
 				<th>EDIT</th>
 				<th>Delete</th>
@@ -48,6 +49,7 @@ $usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word, $currentUserEm
 							$user_name= $value->user_name;
 							$user_fname= $value->user_fname;
 							$user_lname= $value->user_lname;
+							$user_group= $value->user_group;
 							$user_id =$value->user_id;
 							$form_manager = $value->form_manager;
 							$user_perms =$value->user_perms;
@@ -65,6 +67,7 @@ $usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word, $currentUserEm
                                 <td><h4><?php echo $user_email ; ?></h4></td>
                                 <td><h4><?php echo $user_fname; ?></h4></td>
                                 <td><h4><?php echo $user_lname; ?></h4></td>
+                                <td style="background:#92C87C;"><h4><?php echo $user_group; ?></h4></td>
                                 <td><?php echo $ROLE; ?></td>
                                 <td><h4><a class="btn btn-primary" style="width:100%" href="./?I=<?php echo pg_encrypt("ADMIN-edit_user|".$user_id,$pg_encrypt_key,"encode") ?>" />Edit User</a>
 </h4></td>

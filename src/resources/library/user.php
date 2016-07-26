@@ -15,6 +15,10 @@
         public $user_group;
     }
     
+	class INFO
+    {
+        public $INFO_value;
+    }
     /**
      * Simple class for working with group names in an array.
      */
@@ -113,6 +117,47 @@
             $stmt->execute(array(':limit' => $limit));
             $groups = $stmt->fetchAll(PDO::FETCH_CLASS);
             return $groups;
+        }
+	
+		function AdminUpdate($user_id, $user_email, $user_fname,$user_lname,$user_group,$user_perms, $user_password)
+        {
+            $domain_eplode = explode('@', $user_email);
+			$check_domain = "select * from appinfo where INFO_request = 'RegDomain' and INFO_value like '%@".$domain_eplode[1]."%' OR INFO_request = 'RegDomain' and INFO_value = ''";
+           // echo $check_domain;
+			
+			$result_domain = $this->conn->prepare($check_domain);
+			$result_domain->setFetchMode(PDO::FETCH_CLASS, "INFO");
+
+			$result_domain->execute();
+			            $INFO = $result_domain->fetch(PDO::FETCH_CLASS);
+			$password = '';
+			if($user_password <> ''){
+				$password = ", user_password_hash = '".password_hash($user_password, PASSWORD_DEFAULT)."'";
+			}
+			if($INFO->INFO_request){
+				$sql = "UPDATE users set
+				 user_email = '".$user_email."', 
+				 user_fname = '".$user_fname."', 
+				 user_lname = '".$user_lname."',
+				 user_group = '".$user_group."',
+				 user_perms = ".$user_perms.$password."
+				 where user_id = ".$user_id."";
+				 
+				 echo $sql;
+				$result = $this->conn->prepare($sql);
+				$status = $result->execute();
+				return $status; 
+				
+			}else{
+				return "ERROR|The email domain is not allowed";	
+			}
+				/*
+				$sql = "UPDATE groups set GRP_name = '".$GRP_name."'where GRP_id = ".$GRP_id."";
+				$result = $this->conn->prepare($sql);
+				$status = $result->execute();
+				return $status; 
+			*/
+			
         }
         
     }

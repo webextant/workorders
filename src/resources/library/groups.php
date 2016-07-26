@@ -44,13 +44,61 @@ class groupDataAdapter
   function Insert($GRP_name)
         {
             if ($GRP_name == null) {
-                throw new Exception("Operation requires Group Name.", 1);
+                //throw new Exception("Operation requires Group Name.", 1);
+				return "ERROR|Operation requires Group Name";
             }
             $sql = "INSERT ignore INTO groups (GRP_name) VALUES ('".$GRP_name."')";
 		    $result = $this->conn->prepare($sql);
             $status = $result->execute();
             $this->lastInsertId = $this->conn->lastInsertId();
             return $status; 
+        }
+  function Delete($GRP_id, $transfer_GRP_id)
+        {
+            if ($GRP_id == null || $transfer_GRP_id == null) {
+               // throw new Exception("Operation requires Group Name.", 1);
+			   return "ERROR|Operation requires Group Name";
+            }
+            $update_users = "update users set user_group = (select GRP_name from groups where GRP_id = ".$transfer_GRP_id.") where user_group = (select GRP_name from groups where GRP_id = ".$GRP_id.")";
+			$update_result = $this->conn->prepare($update_users);
+            $update_status = $update_result->execute();
+			
+			//echo $update_users;
+			
+			if($update_status){
+				$sql = "Delete from groups where GRP_id = ".$GRP_id."";
+				$result = $this->conn->prepare($sql);
+				$status = $result->execute();
+				return $status; 
+			}else{
+           // $this->lastInsertId = $this->conn->lastInsertId();*/
+            	return "ERROR"; 
+			}
+			
+        }
+  function Update($GRP_id, $GRP_name)
+        {
+            if ($GRP_id == null || $GRP_name == null) {
+                //throw new Exception("Operation requires Group Name.", 1);
+				return "ERROR|Group name can not be blank";
+            }else{
+				$update_users = "update users set user_group = '".$GRP_name."' where user_group = (select GRP_name from groups where GRP_id = ".$GRP_id.")";
+				$update_result = $this->conn->prepare($update_users);
+				$update_status = $update_result->execute();
+				
+				//echo $update_users;
+				
+				if($update_status){
+					$sql = "UPDATE groups set GRP_name = '".$GRP_name."'where GRP_id = ".$GRP_id."";
+					$result = $this->conn->prepare($sql);
+					$status = $result->execute();
+					return $status; 
+				}else{
+			   // $this->lastInsertId = $this->conn->lastInsertId();*/
+					return "ERROR"; 
+				}
+			}
+			
         }
    function SelectWhereJSON($whereArray, $limit = 5000)
         {

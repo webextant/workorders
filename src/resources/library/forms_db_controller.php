@@ -161,6 +161,8 @@
     {
       // renders all saved forms in a boostrap table
       require "./config/db.php";
+	  //include_once "./resources/page_encryption.php";
+
       $conn = new PDO($dsn, $user_name, $pass_word);
       $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
       $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -181,20 +183,23 @@
         echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
+
         foreach ($form as $row) {
           echo "<tr>";
           if (empty($row["FormXml"])){
             echo "<td></td>";
           } else {
-            echo "<td>" . "<a href='#' onclick='onPreviewClick(\"" . $row["FormName"] . "\",\"" . $row["Description"] . "\",\"" . $row["FormXml"] . "\")'>Preview</a></td>";            
+            echo "<td>" . "<a href='#' onclick='onPreviewClick(\"" . $row["FormName"] . "\",\"" . $row["Description"] . "\",\"" . $row["FormXml"] . "\")' class='btn btn-primary'>Preview</a></td>";            
           }
           echo "<td>" . $row["FormName"] . "</td>";
           echo "<td>" . $row["Description"] . "</td>";
           $formid= $row["id"];
           $buildformid = "buildform" . $formid;
-          echo "<td><form id='$buildformid' method='post' action='formsbuild.php'><input name='id' type='hidden' value='$formid'><a href='' onclick=\"document.getElementById('$buildformid').submit();return false;\">Edit</a></form></td>";
+          echo "<td><form id='$buildformid' method='post' action='formsbuild.php'><input name='id' type='hidden' value='$formid'><a href='' onclick=\"document.getElementById('$buildformid').submit();return false;\" class='btn btn-success'>Edit</a></form></td>";
           $delformid = "delform" . $formid;            
-          echo "<td><form id='$delformid' method='post'><input name='id' type='hidden' value='$formid'><input name='deleteform' type='hidden'><a href='' title='Delete Form' onclick=\"document.getElementById('$delformid').submit();return false;\">X</a></form></td>";
+
+		  echo "<td><form id='$delformid' method='post'><input name='id' type='hidden' value='$formid'>                
+<input name='deleteform' type='hidden'><a href='' title='Delete Form' onclick=\"document.getElementById('$delformid').submit();return false;\" class='btn btn-danger'>X".$pg_encrypt_key."</a></form></td>";
           echo "</tr>";
         }
         echo "</tbody>";
