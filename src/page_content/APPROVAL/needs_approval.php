@@ -66,3 +66,5 @@
                         ?>
 				</tbody>
 			</table>
+            </section>
+            
