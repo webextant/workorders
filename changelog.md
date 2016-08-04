@@ -1,4 +1,10 @@
 # CHANGE LOG
+**4 August 2016**
+
+* Fix: #7 district level approver list can now be left blank if needed. Final will be handled by last group level approver.
+* Fix: #10 Special characters in goup name can now include / char.
+* Fix: #11 If forms fields have identical label text they will now render correctly in email and when viewing/editing.
+
 **16 July 2016**
 
 * Fix: Fixed the query section of the update user page.  Now you can update user information
