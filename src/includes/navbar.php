@@ -11,6 +11,10 @@
         </button>
         <a class="navbar-brand" href="index.php"><img src="./IMG/workorder.png" width="30px" style="float:left; margin-right:20px;"> <?php echo Config::SiteTitleShort." - version: "; ?><span style="color:#F98D04;"><?php echo $system_version['INFO_value']; ?></span></a>
     </div>
+    
+    <?php
+	if ($login->isUserLoggedIn() == true) {
+	?>
     <!-- Top Menu Items -->
     <ul class="nav navbar-right top-nav">
         <li class="dropdown">
@@ -26,7 +30,7 @@
             </ul>
         </li>
     </ul>
-    
+   
     
     <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -60,7 +64,8 @@
             <li  > <a style="color:#F0FF00" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#ADMIN"><i class="fa fa-fw fa-cog"></i>Admin Center<i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="ADMIN" class="<?php if($folder == "ADMIN") echo "show"; else echo "collapse"; ?>">
                     <li> <a href="index.php?I=<?php echo pg_encrypt("ADMIN-forms_admin",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-edit"></i>Form Builder </a> </li>
-                    <li> <a  tabindex="-1"href="index.php?I=<?php echo pg_encrypt("ADMIN-list_user",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-user"></i>User List </a> </li>
+                    <li> <a  tabindex="-1"href="index.php?I=<?php echo pg_encrypt("ADMIN-list_user",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-user"></i>Users </a> </li>
+                    <li> <a  tabindex="-1"href="index.php?I=<?php echo pg_encrypt("ADMIN-list_groups",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-user"></i>Groups </a> </li>
                     <li id="settingsNavbarItem">
                     <!-- <a href="settings.php"><i class="fa fa-fw fa-wrench"></i> Settings</a> -->
                     </li> 
@@ -78,6 +83,23 @@
 			?>  
         </ul>
     </div>
-   
+ <?php
+	}else{
+	?>
+    <!-- Top Menu Items -->
+    <ul class="nav navbar-right top-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> ACCOUNT<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+               
+                <li>
+                    <a href="index.php"><i class="fa fa-fw fa-power-off"></i> Log In</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <?php	
+	}
+	?>   
     <!-- /.navbar-collapse  $_SESSION['user_perms']-->
 </nav>

@@ -1,4 +1,35 @@
 # CHANGE LOG
+**4 August 2016**
+
+* Fix: #7 district level approver list can now be left blank if needed. Final will be handled by last group level approver.
+* Fix: #10 Special characters in goup name can now include / char.
+* Fix: #11 If forms fields have identical label text they will now render correctly in email and when viewing/editing.
+
+**16 July 2016**
+
+* Fix: Fixed the query section of the update user page.  Now you can update user information
+	* Need to check on injection security here
+* Fix: Added functionality in $QUERY_PROCESS_SUB
+	* NOW if you: return "ERROR|$MESSAGE" Query process will display an error and the custom message you want to send
+	* IF you do not include the |$messasge it will just display a generic error
+	* Pages updated users.php groups.php (other classes may still need to be updated to show errors correctly)
+
+**15 July 2016**
+
+* Improvement: Added Edit button to workorder submit page
+* Improvement: Created a way to delete Groups (DELETE updates users in that group to another group as selected)
+* Improvement: Added User Group to the edit user page.  Submit is still broke
+* Improvement: Added User Group section to the User List under Admin
+* Fix: Fixed the Edit group section
+
+**11 July 2016**
+
+* Update login script to restrict non-authorized domains
+* Update menu so it does not show if not logged in
+* Created 404.php error page.
+* Created Groups list where existing user groups can be viewed
+* Created New Group Page where admins can add new groups to the system (need to adjust security policy in Class groups.php)
+
 **7 July 2016**
 
 * Fix: Fixed menu issue when not on index.php

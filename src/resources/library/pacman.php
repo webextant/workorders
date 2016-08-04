@@ -7,6 +7,9 @@
 		form-name: A friendly name for the form to process.
 		form-description: General description of the form.
 		form-xml-schema: XML schema definition of the form submitting the data. Based on XML schema generated using: https://github.com/kevinchappell/formBuilder
+
+	Updates:
+		RB 7/12/2016 - Update so this class can be used to validate, parse, and compile form data from a previously saved workorder.
 */
 	class Pacman {
 		// Internal State
@@ -20,7 +23,8 @@
         public $formId;
 		public $formName = "";
 		public $formDescription = "";
-		
+		public $woId = "";
+
 		function __construct ($p){
 			$this->postData = $p;
 			$this->SanitizeStringValues();
@@ -38,6 +42,10 @@
 					$this->formDescription = filter_var(trim($p_value), FILTER_SANITIZE_STRING);
 				} elseif ($p == "form-id") {
 					$this->formId = filter_var(trim($p_value), FILTER_SANITIZE_NUMBER_INT);
+				} elseif ($p == "workorder-id") {
+					$this->woId = filter_var(trim($p_value), FILTER_SANITIZE_NUMBER_INT);
+				} elseif ($p == "post_type") {
+					// IGNORE. No need to use post_type, do not want it stored with data.
 				} else {
 					$this->sterileData[$p] = filter_var(trim($p_value), FILTER_SANITIZE_STRING);					
 				}

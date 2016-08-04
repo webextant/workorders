@@ -3,6 +3,9 @@
     * Classes for working with Workorders
     * @author raymond.brady@webextant.com
     * @license MIT
+    *
+    * Updates:
+    *   RB 7/12/2016 - Now supports updating form data for a previously saved workorder.
     */
     
     /**
@@ -54,8 +57,8 @@
         public $stateColorClass;
         public $isFinalApproval;
         public $finalApproverEmail;
-        
-        private $formData;
+        public $formData;
+
         private $formXmlData;
         
         function __construct($workorder, $key)
@@ -156,18 +159,85 @@
                 $label = $this->GetFormXmlFieldLabelValue($key);
                 if ($label != null)
                 {
-                    $this->fieldData[(string)$label] = $value;
+                    $data["Label"] = (string)$label;
+                    $data["Data"] = $value; 
+                    $this->fieldData[(string)$label . $this->fieldCount] = $data;
                 }
             }
         }
         
-        private function GetFormXmlFieldLabelValue($fieldName)
+        public function GetFormXmlFieldLabelValue($fieldName)
         {
             $result = null;
             foreach ($this->formXmlData->fields[0]->field as $field) {
                 if ($field['name'] == $fieldName)
                 {
                    $result = $field['label'];
+                }
+            }
+            return $result;
+        }
+
+        public function GetFormXmlFieldInfo($fieldName, $fieldValue)
+        {
+            $result = null;
+            foreach ($this->formXmlData->fields[0]->field as $field) {
+                if ($field['name'] == $fieldName)
+                {
+                    $type = $field['type'];
+                    $result['name'] = $field['name'];
+                    $result['label'] = $field['label'];
+                    $result['type'] = $type;
+                    $result['required'] = $field['required'];
+                    // html
+                    $result['form_html'] = '<div>Unsupported element: '.$type.'</div>'; // Default. Unknown types
+
+                    if ($type == 'text' || $type == 'date' || $type == 'email' || $type == 'datetime')
+                    {
+                        $result['form_html'] = '<input id="'.$field['name'].'" name="'.$field['name'].'" type="'.$type.'" class="form-control" value="'.$fieldValue.'" placeholder="'.$field['label'].'">';
+                    }
+                    if ($type == 'textarea')
+                    {
+                        $result['form_html'] = '<textarea id="'.$field['name'].'" name="'.$field['name'].'" class="form-control" rows="3">'.$fieldValue.'</textarea>';
+                    }
+                    if ($type == 'FUTURE-checkbox-group')
+                    {
+                        $result['form_html'] = null; // clear default value first
+                        foreach ($field->option as $key => $value) {
+                            $optionValues[$key] = $value;
+                            if ($fieldValue == $value)
+                            {
+                                $selectedValue = $value;
+                                $checkedValue = 'checked';
+                            } else {
+                                $selectedValue = '';
+                                $checkedValue = '';
+                            }
+                            $result['form_html'] .= '<div class="checkbox"><label>';
+                            $result['form_html'] .= '<input id="'.$field['name'].'" name="'.$field['name'].'" type="checkbox" value="" '.$checkedValue.'>'.$value;
+                            $result['form_html'] .= '</label></div>';
+                        }
+                        $result['option-values'] = $optionValues;
+                    }
+                    if ($type == 'select')
+                    {
+                        $result['form_html'] = '<select id="'.$field['name'].'" name="'.$field['name'].'" class="form-control">';
+                        foreach ($field->option as $key => $value) {
+                            $optionValues[$key] = $value;
+                            if ($fieldValue == $value)
+                            {
+                                $selectedValue = $value;
+                                $checkedValue = 'selected';
+                            } else {
+                                $selectedValue = '';
+                                $checkedValue = '';
+                            }
+                            $result['form_html'] .= '<option value="'.$value.'" '.$checkedValue.'>'.$value.'</option>';
+                        }
+                        $result['form_html'] .= '</select>';
+                        $result['option-values'] = $optionValues;
+                    }
+
                 }
             }
             return $result;
@@ -226,8 +296,8 @@
                     $woBody .= "<div class='" . $woViewModel->stateColorClass . "'>" . $woViewModel->approveState . " (" . $wo->currentApprover . ")" . "</div>";
                     $woBody .= "</div>";
                     foreach ($woViewModel->fieldData as $fieldkey => $value) {
-                        $woBody .= "<h4>" . $fieldkey . "</h4>";
-                        $woBody .= "<P>" . $value . "</p>";
+                        $woBody .= "<h4>" . $value["Label"] . "</h4>";
+                        $woBody .= "<P>" . $value["Data"] . "</p>";
                     }
                     $woBody .= "<h3>Comments</h3>";
                     if (count($woViewModel->comments) == 0) {
@@ -401,7 +471,7 @@
 			if($requirements !== ''){
 				$sql = "SELECT * FROM Workorders WHERE ".$requirements." ORDER BY createdAt DESC";
 					$sql = str_replace('WHERE AND','WHERE',$sql);
-					//echo $sql;
+				//echo $sql."<br />";
 				$stmt = $this->conn->prepare($sql);
 				$stmt->setFetchMode(PDO::FETCH_CLASS, "Workorder");
 				$stmt->execute();
@@ -439,6 +509,16 @@
             $sql = "UPDATE Workorders SET formName = :formName, description = :description, formXml = :formXml, formData = :formData, currentApprover = :currentApprover, workflow = :workflow, approveState = :approveState, approverKey = :approverKey, viewOnlyKey = :viewOnlyKey, updatedAt = now(), updatedBy = :updatedBy, formId = :formId, notifyOnFinalApproval = :notifyOnFinalApproval, comments = :comments WHERE id = :id";
             $result = $this->conn->prepare($sql);
             $status = $result->execute(array('formName' => $workorder->formName, 'description' => $workorder->description, 'formXml' => $workorder->formXml, 'formData' => $workorder->formData, 'currentApprover' => $workorder->currentApprover, 'workflow' => $workorder->workflow, 'approveState' => $workorder->approveState, 'approverKey' => $workorder->approverKey, 'viewOnlyKey' => $workorder->viewOnlyKey, 'updatedBy' => $this->currentUserEmail, 'formId' => $workorder->formId, 'notifyOnFinalApproval' => $workorder->notifyOnFinalApproval, 'comments' => $workorder->comments, 'id' => $workorderId ));
+            return $status;
+        }
+        function UpdateFormData($workorderId, $formData)
+        {
+            if ($this->currentUserEmail == null) {
+                throw new Exception("Operation requires user.", 1);
+            }
+            $sql = "UPDATE Workorders SET formData = :formData, updatedAt = now(), updatedBy = :updatedBy WHERE id = :id";
+            $result = $this->conn->prepare($sql);
+            $status = $result->execute(array(':formData' => $formData, ':updatedBy' => $this->currentUserEmail, ':id' => $workorderId ));
             return $status;
         }
         function Delete($workorderId)
