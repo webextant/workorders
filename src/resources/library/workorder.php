@@ -159,7 +159,9 @@
                 $label = $this->GetFormXmlFieldLabelValue($key);
                 if ($label != null)
                 {
-                    $this->fieldData[(string)$label] = $value;
+                    $data["Label"] = (string)$label;
+                    $data["Data"] = $value; 
+                    $this->fieldData[(string)$label . $this->fieldCount] = $data;
                 }
             }
         }

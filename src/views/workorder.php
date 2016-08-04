@@ -95,8 +95,8 @@
                             echo "<h3>Submitted By</h3><span>" . $wo->createdBy . "</span>";
                             echo "</div>";
                             foreach ($woViewModel->fieldData as $fieldkey => $value) {
-                                echo "<h4>" . $fieldkey . "</h4>";
-                                echo "<P>" . $value . "</p>";
+                                echo "<h4>" . $value["Label"] . "</h4>";
+                                echo "<P>" . $value["Data"] . "</p>";
                             }
                             echo "<h4>Approver Comments</h4>";
                             if (count($woViewModel->comments) == 0) {
