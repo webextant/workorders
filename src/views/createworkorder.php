@@ -68,7 +68,7 @@
                     $formName = $formPostHandler->formName; //$_POST['form-name'];
                     $formDescription = $formPostHandler->formDescription; //$_POST['form-description'];
                     // Form Workflow field holds array of approver email addresses. We need to transform this to work with the data.
-                    $approverArray = explode(',', $form['Workflow']);
+                    $approverArray = ApproverHelper::ParseRawWorkflowData($form['Workflow']);
                     $approvers = ApproverHelper::NewApproverArrayFromEmailArray($approverArray);
                     // Get the groupWorkflow for the users group
                     $groupWorkflows = $form['GroupWorkflows'];

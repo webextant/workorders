@@ -61,7 +61,6 @@
       if ($desc == ""){$valid = False;}
       if ($xml !== ""){
         // TODO: Check for valid XML
-      if ($workflow == ""){$valid = false;}
       }
       return $valid;
     }
