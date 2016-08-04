@@ -178,6 +178,16 @@
                 return $approvers;
             }
         }
+        /** Parse raw workflow data from form element. Expects a CSV of email addresses. returns array of email addresses. */
+        public static function ParseRawWorkflowData($workflowCsvData)
+        {
+            if ($workflowCsvData == "") {
+                $approverArray = array();
+            } else {
+                $approverArray = explode(',', $workflowCsvData);
+            }
+            return $approverArray;
+        }
     }
     
     /** Approve State for Workorders */
