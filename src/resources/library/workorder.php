@@ -159,7 +159,9 @@
                 $label = $this->GetFormXmlFieldLabelValue($key);
                 if ($label != null)
                 {
-                    $this->fieldData[(string)$label] = $value;
+                    $data["Label"] = (string)$label;
+                    $data["Data"] = $value; 
+                    $this->fieldData[(string)$label . $this->fieldCount] = $data;
                 }
             }
         }
@@ -294,8 +296,8 @@
                     $woBody .= "<div class='" . $woViewModel->stateColorClass . "'>" . $woViewModel->approveState . " (" . $wo->currentApprover . ")" . "</div>";
                     $woBody .= "</div>";
                     foreach ($woViewModel->fieldData as $fieldkey => $value) {
-                        $woBody .= "<h4>" . $fieldkey . "</h4>";
-                        $woBody .= "<P>" . $value . "</p>";
+                        $woBody .= "<h4>" . $value["Label"] . "</h4>";
+                        $woBody .= "<P>" . $value["Data"] . "</p>";
                     }
                     $woBody .= "<h3>Comments</h3>";
                     if (count($woViewModel->comments) == 0) {
