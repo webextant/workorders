@@ -10,6 +10,8 @@
     $userAdapter = new UserDataAdapter($dsn, $user_name, $pass_word);
     $userGroups = $userAdapter->SelectUniqueGroupNames();
     $groupWorkflowSuffix = 'Workflow';  // appended to groupWorkflow id's
+    $illegalGroupChars = array(" ", "/"); // Include illegal characters for group name.
+    $replaceIllegalGroupChars = "-"; // Group name is used for HTML element id's so replace illegal chars with this char.
 ?>
 
 <script type="text/javascript">
@@ -134,7 +136,7 @@
                         <?php
                             // Build the group tabs
                             foreach ($userGroups as $key => $group) {
-                                $hrefTabsGroupName = str_replace(" ", "-", $group->name);
+                                $hrefTabsGroupName = str_replace($illegalGroupChars, $replaceIllegalGroupChars, $group->name);
                                 echo '<li><a href="#tabs-' . $hrefTabsGroupName . '">' . $group->name . '</a></li>';
                             }
                         ?>
@@ -142,7 +144,7 @@
                     <?php
                         // build tab content for each group tab. Using Tagit for UI
                         foreach ($userGroups as $key => $group) {
-                            $tabContentGroupName = str_replace(" ", "-", $group->name);
+                            $tabContentGroupName = str_replace($illegalGroupChars, $replaceIllegalGroupChars, $group->name);
                     ?>
                             
                             <input id="<?php echo $tabContentGroupName . $groupWorkflowSuffix ?>" type="text" value="" hidden />
@@ -246,7 +248,7 @@
             var compileGroupWorkflowsData = function(){
                 var data = {};
                 userGroups.map(function(group){
-                    var groupDashedName = group.name.replace(/ /g, '-');
+                    var groupDashedName = group.name.replace(/ |\//g, '-');
                     var groupTags = jQuery("#" + groupDashedName + groupWorkflowSuffix).val().split(",");
                     data[groupDashedName] = groupTags;
                 });
