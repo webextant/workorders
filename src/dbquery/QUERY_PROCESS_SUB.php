@@ -9,7 +9,8 @@ above the page porcessor.  The Post Processor is in the header file and displays
 above the container div.  This way the notification can be put within the container and display correctly
 ************************************************************************************************/
   if(isset($QUERY_PROCESS)){;
-	if($QUERY_PROCESS){;
+	$CUSTOM = explode("|",$QUERY_PROCESS);	
+	if($CUSTOM[0] <> "ERROR"){;
 	?>
      <div class="alert alert-success">
       <button type="button" class="close" data-dismiss="alert">×</button>
@@ -22,7 +23,7 @@ above the container div.  This way the notification can be put within the contai
 		?>
 			 <div class="alert alert-danger" >
 		  <button type="button" class="close" data-dismiss="alert">×</button>
-		  <strong>ERROR!!: </strong> There was a problem and <?php echo $element; ?> was not <?php echo $element_function; ?>!  A system admin has been notified. <?php echo $mysql_error; ?>
+		  <strong>ERROR!!: </strong> There was a problem and <?php echo $element; ?> was not <?php echo $element_function; ?>! <?php echo $CUSTOM[1]; ?>
 		  
 	   
 		</div>

@@ -17,11 +17,11 @@
     $wo = $woDbAdapter->Select($id);
     $woViewModel = new WorkorderViewModel($wo, $key);
 
-    $acceptBtnText = "Accept";
-    $rejectBtnText = "Reject";
+    $acceptBtnText = "APPROVE (not final)";
+    $rejectBtnText = "DENY";
     if ($woViewModel->isFinalApproval){
-        $acceptBtnText = "Completed";
-        $rejectBtnText = "Not Completed";
+        $acceptBtnText = "APPROVE (final)";
+        $rejectBtnText = "DENY";
         $finalApprovalHiddenClass = "hidden";
     }
 ?>
@@ -55,12 +55,23 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-3"></div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-12"></div>
+                    <div class="col-lg-12">
                         <h1 class="page-header">
                             <?php echo $wo->formName; ?>
                         </h1>
                         <ol class="breadcrumb">
+                           <?php
+								if ($login->isUserLoggedIn() == true) {
+					   				if($_SESSION['user_perms'] <=2){
+							?>
+                            <li class="">
+                                <i class="fa fa-fw fa-folder"></i><a href="index.php?I=<?php echo pg_encrypt("APPROVAL-needs_approval",$pg_encrypt_key,"encode"); ?>"> NEEDS APPROVAL</a>
+                            </li>
+                            <?php
+									}
+								}
+							?>
                             <li class="active">
                                 <i class="fa fa-fw fa-file"></i> <?php echo $woViewModel->workorderIdText; ?>
                             </li>
@@ -84,8 +95,8 @@
                             echo "<h3>Submitted By</h3><span>" . $wo->createdBy . "</span>";
                             echo "</div>";
                             foreach ($woViewModel->fieldData as $fieldkey => $value) {
-                                echo "<h4>" . $fieldkey . "</h4>";
-                                echo "<P>" . $value . "</p>";
+                                echo "<h4>" . $value["Label"] . "</h4>";
+                                echo "<P>" . $value["Data"] . "</p>";
                             }
                             echo "<h4>Approver Comments</h4>";
                             if (count($woViewModel->comments) == 0) {
@@ -129,6 +140,7 @@
                             </div>
                             <button id="approve-btn" type="button" class="btn btn-success"><?php echo $acceptBtnText; ?></button>
                             <button id="reject-btn" type="button" class="btn btn-danger"><?php echo $rejectBtnText; ?></button>
+                            <a  href="index.php?I=<?php echo pg_encrypt("WORKORDER-edit|".$id."|".$key,$pg_encrypt_key,"encode"); ?>" type="button" class="btn btn-primary">Edit Workorder</a>
                         </form>
                     <?php } ?>
                         
