@@ -83,7 +83,7 @@
                 <input id="formdesc" name="formdesc" type="hidden" value="<?php echo htmlspecialchars($result['Description']); ?>">
                 <input id="xmldata" name="xmldata" type="hidden" value="">
                 <input id="updateform" name="updateform" type="hidden" value=""> 
-                <input id="emailTags" name="workflow" type="text" hidden required value="<?php echo htmlspecialchars($result['Workflow']); ?>">
+                <input id="emailTags" name="workflow" type="text" hidden value="<?php echo htmlspecialchars($result['Workflow']); ?>">
                 <input id="finalEmailTags" name="notifyOnFinalApproval" type="text" value="<?php echo htmlspecialchars($result['notifyOnFinalApproval']); ?>" hidden>
                 <input id="groupWorkflows" name="groupWorkflows" type="text" hidden value="<?php echo htmlspecialchars($result['GroupWorkflows']); ?>">
                 <label class="checkbox-inline"><input name="formAvailable" type="checkbox" <?php if($result['Available'] == 1) {echo "checked";} ?>> Form Available For Submissions</label>
@@ -274,6 +274,7 @@ hello
             $(template).formRender(formRenderOpts);
             jQuery('#formPreviewModal').modal();
           });
+          // Use the required attribute on required form fields, then set the message below for the form field. 
           jQuery("#formsaveform").validate({
               submitHandler: function(form){
                 var xmlString = formBuilder.data('formBuilder').formData;
