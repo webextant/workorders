@@ -1,4 +1,5 @@
 <?php
+	$folder = null; // set default value or error in navbar. XDebug
     require_once('./resources/appconfig.php');
     require_once("./resources/library/appinfo.php");
     $appInfoDbAdapter = new AppInfo($dsn, $user_name, $pass_word);
@@ -44,6 +45,8 @@
         $currentUserGroup = $_SESSION['user_group'];
         $hideFormClassString = "";
         $fromEmailAddress = 'noreply@dumasisd.org';
+        $formSubmissionMessage = "";
+        $hideFormRenderingClassString = "";
         // Handle post
         if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST')
         {
@@ -51,7 +54,7 @@
             if(isset($_POST['id']))
             {
                 $formId = $_POST['id'];
-                $formsDataAdapter = new FormsDataController();
+                $formsDataAdapter = new FormsDataController($dsn, $user_name, $pass_word);
                 $formToRender = $formsDataAdapter->getFormById($formId);
                 $formName = $formToRender['FormName'];
                 $formDescription = $formToRender['Description'];
@@ -61,7 +64,7 @@
                     // POST['id'] is not present. Should handle posted form data here
                     $formPostHandler = new Pacman($_POST);
                     // Need to load the form. Form data is stored with new workorder.
-                    $formsDataAdapter = new FormsDataController();
+                    $formsDataAdapter = new FormsDataController($dsn, $user_name, $pass_word);
                     $form = $formsDataAdapter->getFormById($formPostHandler->formId);
                     // Setup data needed for creating workorder and rendering page
                     $hideFormRenderingClassString = "hidden";

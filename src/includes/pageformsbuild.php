@@ -3,7 +3,7 @@
     require_once "./resources/library/forms_db_controller.php";
     require_once "./resources/library/user.php";
     require_once "./config/db.php";
-    $fdc = new FormsDataController();
+    $fdc = new FormsDataController($dsn, $user_name, $pass_word);
     $result = $fdc->getFormById($_POST["id"]);
     $approverAdapter = new ApproverDataAdapter($dsn, $user_name, $pass_word);
     $allApprovers = $approverAdapter->SelectAll();

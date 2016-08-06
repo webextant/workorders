@@ -1,57 +1,44 @@
 <?php
   class FormsDataController
   {
+    private $conn = null;
+
+    function __construct($dsn, $user_name, $pass_word)
+    {
+            // setup the db connection for this adapter
+            $this->conn = new PDO($dsn, $user_name, $pass_word);
+            $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    }
+    function __destruct()
+    {
+        // tear down the db connection, no longer needed
+        $this->conn = null;
+    }
+
     public function createFormDefinitionsTable(){
-      require "./config/db.php";
-      $conn = new PDO($dsn, $user_name, $pass_word);
-      $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       try {
         $sql = "CREATE TABLE FormDefinitions (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, FormName VARCHAR( 30 ), Description VARCHAR( 150 ), FormXml TEXT, Workflow TEXT, notifyOnFinalApproval TEXT, Available BOOLEAN DEFAULT 0)";
-        $conn->exec($sql);
+        $this->conn->exec($sql);
         echo "Form definitions table created...";
       }
       catch(PDOException $e)
       {
         echo $sql . "<br>" . $e->getMessage();
       }
-      $conn = null;
     }
     
-    public function createFormDataTable(){
-      // DEPRECATED: FormData table will be replaced by Workorder table. Handled in workorder.php in the resources/library folder.
-      require "./config/db.php";
-      $conn = new PDO($dsn, $user_name, $pass_word);
-      $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      try {
-        $sql = "CREATE TABLE FormData (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, FormName VARCHAR( 30 ), Description VARCHAR( 150 ), CurrentApproverEmail VARCHAR( 80 ), FormXml TEXT, FormData TEXT, Workflow TEXT)";
-        $conn->exec($sql);
-        echo "Form data table created...";
-      }
-      catch(PDOException $e)
-      {
-        echo $sql . "<br>" . $e->getMessage();
-      }
-      $conn = null;
-    }
-
     public function dropFormDefinitionsTable()
     {
-      require "./config/db.php";
-      $conn = new PDO($dsn, $user_name, $pass_word);
-      $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       try {
         $sql = "DROP TABLE FormDefinitions";
-        $conn->exec($sql);
+        $this->conn->exec($sql);
         echo "Form definitions table DROPPED...";
       }
       catch(PDOException $e)
       {
         echo $sql . "<br>" . $e->getMessage();
       }
-      $conn = null;
     }
 
     public function verifyAddFormFields($name, $desc, $xml, $workflow, $notifyOnFinalApproval)
@@ -73,14 +60,9 @@
       $xml = trim($xml);
       $valid = $this->verifyAddFormFields($name, $desc, $xml, $workflow, $notifyOnFinalApproval, $groupWorkflows);
       if($valid){
-        require "./config/db.php";
-        $conn = new PDO($dsn, $user_name, $pass_word);
-        $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = "INSERT INTO FormDefinitions (FormName, Description, FormXml, Workflow, notifyOnFinalApproval, Available, GroupWorkflows) VALUES (:FormName, :Description, :FormXml, :Workflow, :notifyOnFinalApproval, :Available, :GroupWorkflows)";
-        $result = $conn->prepare($sql);
+        $result = $this->conn->prepare($sql);
         $status = $result->execute(array('FormName' => $name, 'Description' => $desc, 'FormXml' => base64_encode($xml), 'Workflow' => $workflow, 'notifyOnFinalApproval' => $notifyOnFinalApproval, 'Available' => $available, 'GroupWorkflows' => $groupWorkflows));
-        $conn = null;
         return true;
       } else {
         return false;
@@ -91,14 +73,9 @@
     {
       // DEPRECATED: FormData table will be replaced by Workorder table. Handled in workorder.php in the resources/library folder.
       if($data->InputIsValid()){
-        require "./config/db.php";
-        $conn = new PDO($dsn, $user_name, $pass_word);
-        $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = "INSERT INTO FormData (FormName, Description, FormXml, FormData) VALUES (:FormName, :Description, :FormXml, :FormData)";
-        $result = $conn->prepare($sql);
+        $result = $this->conn->prepare($sql);
         $status = $result->execute(array('FormName' => $data->formName, 'Description' => $data->formDescription, 'FormXml' => base64_encode($data->asFormXML()), 'FormData' => $data->asJSON()));
-        $conn = null;
         return true;        
       } else {
         return false;
@@ -112,14 +89,9 @@
       $xml = trim($xml);
       $valid = $this->verifyAddFormFields($name, $desc, $xml, $workflow, $notifyOnFinalApproval, $groupWorkflows);
       if($valid){
-        require "./config/db.php";
-        $conn = new PDO($dsn, $user_name, $pass_word);
-        $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = "UPDATE FormDefinitions SET FormName = :FormName, Description = :Description, FormXml = :FormXml, Workflow = :Workflow, notifyOnFinalApproval = :notifyOnFinalApproval, Available = :Available, GroupWorkflows = :GroupWorkflows WHERE id = :id";
-        $result = $conn->prepare($sql);
+        $result = $this->conn->prepare($sql);
         $status = $result->execute(array('FormName' => $name, 'Description' => $desc, 'FormXml' => base64_encode($xml), 'Workflow' => $workflow, 'notifyOnFinalApproval' => $notifyOnFinalApproval, 'Available' => $available, 'GroupWorkflows' => $groupWorkflows, 'id' => $id));
-        $conn = null;
         return true;        
       } else {
         return false;
@@ -128,26 +100,17 @@
     
     public function deleteForm($id)
     {
-        require "./config/db.php";
-        $conn = new PDO($dsn, $user_name, $pass_word);
-        $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = "DELETE FROM FormDefinitions WHERE id = :id";
-        $result = $conn->prepare($sql);
+        $result = $this->conn->prepare($sql);
         $status = $result->execute(array('id' => $id));
-        $conn = null;
     }
     
     public function getFormById($id){
       // returns saved form data
-      require "./config/db.php";
-      $conn = new PDO($dsn, $user_name, $pass_word);
-      $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $formdata = null;
       try {
         $sql = "SELECT * FROM FormDefinitions WHERE id = :id";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute(array(':id' => $id));
         $formdata = $stmt->fetch();
       } catch (PDOException $e) {
@@ -159,15 +122,9 @@
     public function renderFormsList()
     {
       // renders all saved forms in a boostrap table
-      require "./config/db.php";
-	  //include_once "./resources/page_encryption.php";
-
-      $conn = new PDO($dsn, $user_name, $pass_word);
-      $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       try {
         $sql = "SELECT * FROM FormDefinitions";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $form = $stmt->fetchAll();
 
@@ -208,17 +165,12 @@
       {
         echo $sql . "<br>" . $e->getMessage();
       }
-      $conn = null;
     }
     public function renderFormDefinitionsData()
     {
-      require "./config/db.php";
-      $conn = new PDO($dsn, $user_name, $pass_word);
-      $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       try {
         $sql = "SELECT * FROM FormDefinitions";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $form = $stmt->fetchAll();
 
@@ -261,7 +213,6 @@
       {
         echo $sql . "<br>" . $e->getMessage();
       }
-      $conn = null;
     }
 
     public function renderDbInfo(){
@@ -276,13 +227,9 @@
       * @since			2012
       */
       require_once "dBug!.php";
-      require "./config/db.php";
-      $connect = new PDO($dsn, $user_name, $pass_word);
-      $connect->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-      $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
       $sql = "SELECT * FROM FormDefinitions";
-      $result = $connect->prepare($sql);
+      $result = $this->conn->prepare($sql);
       $status = $result->execute();
       if (($status) && ($result->rowCount() > 0))
       {
@@ -295,7 +242,6 @@
         //dump all data from associative array converted from query result
         new dBug($results);
       }
-      $connect = null;
     }
   }
 ?>

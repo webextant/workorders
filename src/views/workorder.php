@@ -1,4 +1,5 @@
 <?php
+	$folder = null; // set default value or error in navbar. XDebug
     require_once('./resources/appconfig.php');
     require_once("./resources/library/appinfo.php");
     $appInfoDbAdapter = new AppInfo($dsn, $user_name, $pass_word);

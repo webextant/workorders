@@ -2,7 +2,7 @@
 
 require_once "./resources/library/user.php";
 
-$usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word, $currentUserEmail);
+$usrDbAdapter = new UserDataAdapter($dsn, $user_name, $pass_word);
 
 
 $element = "User";

@@ -136,28 +136,21 @@
 			}
 			if($INFO->INFO_request){
 				$sql = "UPDATE users set
-				 user_email = '".$user_email."', 
-				 user_fname = '".$user_fname."', 
-				 user_lname = '".$user_lname."',
-				 user_group = '".$user_group."',
-				 user_perms = ".$user_perms.$password."
-				 where user_id = ".$user_id."";
+				 user_email = :user_email, 
+				 user_fname = :user_fname, 
+				 user_lname = :user_lname,
+				 user_group = :user_group,
+				 user_perms = :user_perms
+				 where user_id = :user_id";
 				 
-				 echo $sql;
 				$result = $this->conn->prepare($sql);
-				$status = $result->execute();
+                $params = array('user_email' => $user_email, 'user_fname' => $user_fname, 'user_lname' => $user_lname, 'user_group' => $user_group, 'user_perms' => $user_perms, 'user_id' => $user_id);
+				$status = $result->execute($params);
 				return $status; 
 				
 			}else{
 				return "ERROR|The email domain is not allowed";	
 			}
-				/*
-				$sql = "UPDATE groups set GRP_name = '".$GRP_name."'where GRP_id = ".$GRP_id."";
-				$result = $this->conn->prepare($sql);
-				$status = $result->execute();
-				return $status; 
-			*/
-			
         }
         
     }

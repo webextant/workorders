@@ -1,3 +1,10 @@
+<?php
+    // Need to setup dependancy items for navbar.php since this is not using _page_processor yet. 
+	$folder = null; // set default value or error in navbar. XDebug
+    require_once "./resources/library/appinfo.php";
+    $appInfoDbAdapter = new AppInfo($dsn, $user_name, $pass_word);
+    $system_version =$appInfoDbAdapter->Get('System Version');
+?>
 <!DOCTYPE html>
 <html lang="en">
 

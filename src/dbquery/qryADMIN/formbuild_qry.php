@@ -10,7 +10,7 @@ $element_function = "Updated";
             $formAvailable = 0;
             if (isset($_POST["formAvailable"])) { $formAvailable = 1; }
             if (isset($_POST["updateform"])){
-              $fdc = new FormsDataController();
+              $fdc = new FormsDataController($dsn, $user_name, $pass_word);
               $QUERY_PROCESS = $fdc->updateForm($_POST["id"], $_POST["formname"], $_POST["formdesc"], $_POST["xmldata"], $_POST["workflow"], $_POST["notifyOnFinalApproval"], $formAvailable, $_POST["groupWorkflows"]);
             } elseif (isset($_POST["deleteform"])) {
               $fdc = new FormsDataController();

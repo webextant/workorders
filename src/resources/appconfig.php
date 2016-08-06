@@ -10,11 +10,7 @@ abstract class Config {
     const BaseUrl = "http://www.example.com/";
     const SiteTitleShort = "FLOW";
     const SiteTitleLong = "Work Flow";
-    const DbDsn = "mysql:host=localhost;dbname=formsdb";
-    const DbUsername = "";
-    const DbPassword = "";
     const WorkorderApproverScript = "workorderview.php";
     const WorkorderViewOnlyScript = "workorderview.php";
 }
-
 ?>

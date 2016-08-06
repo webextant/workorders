@@ -69,7 +69,7 @@
           }
 		  */
           // Show all the forms in the db
-          $fdc = new FormsDataController( );
+          $fdc = new FormsDataController($dsn, $user_name, $pass_word);
           $fdc->renderFormsList();
 		 
         ?>

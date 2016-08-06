@@ -1,4 +1,15 @@
 # CHANGE LOG
+**6 August 2016**
+
+* Fix: Pay engineering debt. forms_db_controller.php better follows data adapter pattern used in other classes.
+* Fix: classes/login.php now including user fname and lname in query.
+* Fix: XDebug with PHP on Windows showing multiple undefined variables. Fixed by initializing vars to null in multiple pages.
+* Fix: Form preview on workorder forms list page now working. Added header_forms_admin.php to include JS code.
+* Fix: Remove old db conn info in appconfig.php Not needed any longer.
+* Fix: UserDataAdapter AdminUpdate function protected against SQL injection.
+* Fix: Update .gitignore to ignore Visual Studio Code IDE config files in .vscode folder.
+* Improvement: Supports using environment variables for db connection. See config/db.php for details.
+
 **4 August 2016**
 
 * Fix: #7 district level approver list can now be left blank if needed. Final will be handled by last group level approver.
