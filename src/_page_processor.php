@@ -163,7 +163,7 @@ if (isset($login)) {
                     <div class="col-lg-12">
                         <div class="alert alert-danger alert-dismissable">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <i class="fa fa-info-circle"></i>  <strong>ALERT </strong> Your are on the local server
+                            <i class="fa fa-info-circle"></i>  <strong>ALERT </strong> You are on the local server
                         </div>
                     </div>
 			<?php
