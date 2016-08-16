@@ -13,10 +13,12 @@
     }
     
     require_once('./resources/library/workorder.php');
+    require_once './resources/library/collaborator.php';
     require_once('./config/db.php');
     $woDbAdapter = new WorkorderDataAdapter(DB_DSN, DB_USER, DB_PASS, $_SESSION['user_email']);
     $wo = $woDbAdapter->Select($id);
     $woViewModel = new WorkorderViewModel($wo, $key);
+    $collabViewModel = new CollaboratorViewModel(DB_DSN, DB_USER, DB_PASS, $_SESSION['user_email']);
 
     $acceptBtnText = "APPROVE (not final)";
     $rejectBtnText = "DENY";
@@ -89,17 +91,32 @@
                 <div class="row">
                     <div class="col-lg-3"></div>
                     <div class="col-lg-6">
-                    <?php
-                        if ($woViewModel->valid) {
-                            echo "<div class='jumbotron well'>";
-                            echo "<div class='" . $woViewModel->stateColorClass . "'>" . $woViewModel->approveState . " (" . $wo->currentApprover . ")" . "</div>";
-                            echo "<h3>Submitted By</h3><span>" . $wo->createdBy . "</span>";
-                            echo "</div>";
+                    <?php if ($woViewModel->valid) { ?>
+                        <div class='jumbotron well'>
+                            <div class="<?=$woViewModel->stateColorClass?>"><?=$woViewModel->approveState . " (" . $wo->currentApprover . ")"?></div>
+                            <div class="alert alert-info">
+                                <h4><span class="fa fa-user" aria-hidden="true" /> Requested By</h4>
+                                <span><?=$wo->createdBy?></span>
+                            </div>
+                        </div>
+                        <div id="collaboratorInfo" class="alert alert-success">
+                            <form id="addcollabform" action="./?I=<?=pg_encrypt('WORKORDER-collab|'.$wo->id."|".$wo->approverKey,$pg_encrypt_key,'encode')?>" method="post">
+                                <input type="hidden" id="post_type" name="post_type" value="<?php echo pg_encrypt("qryWORKORDER-add_collab_qry",$pg_encrypt_key,"encode") ?>" />
+                                <i class="fa fa-info-circle" style="float:right;" aria-hidden="true" title="Collaborator can view and comment on this work item." ></i>
+                                <h4><i class="fa fa-users" aria-hidden="true" ></i> Collaborator</h4>
+                                <select id="collabUserSelect" name="collabUserSelect" class="form-control">
+                                    <option value="" disabled selected hidden>Select a Collaborator</option>
+                                </select>
+                            </form>
+                        </div>
+                        <?php 
                             foreach ($woViewModel->fieldData as $fieldkey => $value) {
                                 echo "<h4>" . $value["Label"] . "</h4>";
                                 echo "<P>" . $value["Data"] . "</p>";
                             }
-                            echo "<h4>Approver Comments</h4>";
+                        ?>
+                        <h4>Approver Comments</h4>
+                        <?php
                             if (count($woViewModel->comments) == 0) {
                                 echo "<span>No comments posted.</span>";
                             } else {
@@ -117,7 +134,8 @@
                                 }                                
                                 echo "</ul>";
                             }
-                        } else {
+                        ?>
+                        <?php } else {
                             echo '<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> Unable to view the workorder. You may not be authorized...</div>';
                         }
                     ?>
@@ -139,12 +157,19 @@
                                 <label for="comment">Comments</label>
                                 <textarea id="comment" name="comment" class="form-control" rows="5" required></textarea>
                             </div>
-                            <button id="approve-btn" type="button" class="btn btn-success"><?php echo $acceptBtnText; ?></button>
-                            <button id="reject-btn" type="button" class="btn btn-danger"><?php echo $rejectBtnText; ?></button>
-                            <a  href="index.php?I=<?php echo pg_encrypt("WORKORDER-edit|".$id."|".$key,$pg_encrypt_key,"encode"); ?>" type="button" class="btn btn-primary">Edit Workorder</a>
+                            <div class="row">
+                                <div id="approve-btn-group" class="col-xs-12">
+                                    <button id="approve-btn" type="button" class="btn btn-success"><?php echo $acceptBtnText; ?></button>
+                                    <button id="reject-btn" type="button" class="btn btn-danger"><?php echo $rejectBtnText; ?></button>
+                                    <a  href="index.php?I=<?php echo pg_encrypt("WORKORDER-edit|".$id."|".$key,$pg_encrypt_key,"encode"); ?>" type="button" class="btn btn-primary">Edit Workorder</a>
+                                </div>
+                                <div id="save-collab-btn-group" class="col-xs-12" hidden>
+                                    <button id="collab-save-btn" type="button" class="btn btn-success">Invite Collaborator</button>
+                                    <button id="collab-clear-btn" type="button" class="btn btn-danger">Cancel</button>
+                                </div>
+                            </div>
                         </form>
                     <?php } ?>
-                        
                     </div>
                     <div class="col-lg-3"></div>
                 </div>
@@ -185,6 +210,29 @@
     <!-- /#wrapper -->
 
     <?php require_once('./includes/jsbs.php'); ?>
+
+    <script src="js/library/collaborator.js" ></script>
+    <script>
+        var cvm = new CollaboratorViewModel(<?=json_encode($collabViewModel->collabUsers)?>);
+        cvm.connectSelectElement("collabUserSelect")
+        cvm.subscribeCollabChanged(function(e){
+            console.log(e);
+            if (e.hasSelection){
+                jQuery("#approve-btn-group").hide();
+                jQuery("#save-collab-btn-group").show();
+            } else {
+                jQuery("#save-collab-btn-group").hide();
+                jQuery("#approve-btn-group").show();
+            }
+        });
+        jQuery('#collab-clear-btn').click(function(){
+            cvm.clearCollab();
+        });
+        jQuery('#collab-save-btn').click(function(){
+            jQuery('#addcollabform').submit();
+        });
+
+    </script>
 </body>
 
 </html>
