@@ -24,7 +24,7 @@ Date Created: 7/12/2016
                     <i class="fa fa-fw fa-file"></i>Workorder #<?=$wo->id?>
                 </li>
                 <li><?=$wo->createdAt?></li>
-                <li><?=$wo->createdBy?></li>
+                <li>From: <?=$wo->createdBy?></li>
             </ol>
         </div>
         <div class="col-lg-3"></div>
@@ -48,7 +48,7 @@ Date Created: 7/12/2016
                     </div>
                 <?php } ?>
                <button type="submit" class="btn btn-success">Save</button>
-               <a class="btn btn-primary" href="./workorderview.php?id=<?=$wo->id?>&key=<?=$wo->approverKey?>" >Approve / Deny</a>
+               <a class="btn btn-primary" href="./?I=<?=pg_encrypt('WORKORDER-work|'.$wo->id.'|'.$wo->approverKey,$pg_encrypt_key,'encode')?>" >Approve / Deny</a>
             </form>
 
         </div>

@@ -118,7 +118,7 @@ $workorders = $woDbAdapter->SelectWhereJSON($where_object);
 							   }
 								echo "<tr>";
                                     echo "<td>" . $value->createdAt . "</td>";
-                                    echo "<td><a href='./workorderview.php?id=".$value->id."&key=" . $value->viewOnlyKey . "' class=\"btn btn-primary\">VIEW</a></td>";
+                                    echo "<td><a href='./?I=" . pg_encrypt('WORKORDER-work|'.$value->id."|".$value->viewOnlyKey,$pg_encrypt_key,'encode') . "' class=\"btn btn-primary\">VIEW</a></td>";
                                     echo "<td>" . $value->formName . "</td>";
                                     echo "<td>" . $value->currentApprover . "</td>";
                                     echo "<td style=\"color:$color\">".$approveState_val."</td>";

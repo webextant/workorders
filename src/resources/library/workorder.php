@@ -30,6 +30,7 @@
         public $updatedBy;
         public $notifyOnFinalApproval;
         public $comments;
+        public $collaborators;
     }
     
     /**  */
@@ -58,10 +59,15 @@
         public $isFinalApproval;
         public $finalApproverEmail;
         public $formData;
+        public $hasCollaborator;
+        public $collaboratorStateColorCode;
+        public $collaboratorStateClass;
+        public $isClosed;
+        public $userIsCurrentApprover;
 
         private $formXmlData;
         
-        function __construct($workorder, $key)
+        function __construct($workorder, $key, $user_email = "")
         {
             try {
                 $this->formXmlData = new SimpleXMLElement($workorder->formXml);
@@ -70,11 +76,25 @@
                 $this->VerifyKey($workorder, $key);
                 $this->CompileViewData();
                 $this->workorderIdText = "Workorder #" . $workorder->id;
-                $this->SetApproveState($workorder->approveState); 
+                $this->SetApproveState($workorder->approveState);
+                $this->SetCollaboratorState($workorder->collaborators);
                 $this->SetFinalApproval($workorder->workflow);
+                $this->VerifyCurrentUser($workorder, $user_email);
             } catch (Exception $e) {
                 $this->valid = false;
                 $this->workorderIdText = "Workorder not found or invalid data.";
+            }
+        }
+
+        private function VerifyCurrentUser($wo, $user_email)
+        {
+            if($user_email == ""){
+                // no user provided. Allow valid if key is current apporver key. Used when accessing without logging in.
+                if($this->approverKeyValid):
+                    $this->userIsCurrentApprover = true;
+                else:
+                    $this->userIsCurrentApprover = $wo->currentApprover == $user_email;
+                endif;
             }
         }
 
@@ -86,6 +106,20 @@
                 $this->finalApproverEmail = end($wf->approvers)->email;
             } else {
                 $this->isFinalApproval = "";
+            }
+        }
+
+        private function SetCollaboratorState($state)
+        {
+            if ($state == null)
+            {
+                $this->hasCollaborator = false;
+                $this->collaboratorStateColorCode = "#dff0d8";
+                $this->collaboratorStateClass = "alert alert-success";
+            } else {
+                $this->hasCollaborator = true;
+                $this->collaboratorStateColorCode = "#fcf8e3";
+                $this->collaboratorStateClass = "alert alert-warning";
             }
         }
 
@@ -101,24 +135,28 @@
                     $this->stateColorCode = "#fcf8e3";
                     $this->stateColorClass = "alert alert-warning";
                     $this->approveStateValue = $state;
+                    $this->isClosed = false;
                     break;
                 case "ApproveInProgress":
                     $this->approveState = "Item In Progress";
                     $this->stateColorCode = "#d9edf7";
                     $this->stateColorClass = "alert alert-info";
                     $this->approveStateValue = $state;
+                    $this->isClosed = false;
                     break;
                 case "ApproveClosed":
                     $this->approveState = "Closed (Approved)";
                     $this->stateColorCode = "#dff0d8";
                     $this->stateColorClass = "alert alert-success";
                     $this->approveStateValue = $state;
+                    $this->isClosed = true;
                     break;
                 case "RejectClosed":
                     $this->approveState = "Closed (Rejected)";
                     $this->stateColorCode = "#f2dede";
                     $this->stateColorClass = "alert alert-danger";
                     $this->approveStateValue = $state;
+                    $this->isClosed = true;
                     break;
             }
             

@@ -80,7 +80,7 @@
                             <tr>
                                 <td><h4><?php echo  $value->createdAt; ?></h4></td>
                                 <td><h4><?php echo  $value->currentApprover; ?></h4></td>
-                                <td><h4><?php echo "<a href='./workorderview.php?id=".$value->id."&key=" . $value->viewOnlyKey . "' class=\"btn btn-".$btncode."\">VIEW</a>"; ?></h4></td>
+                                <td><h4><?php echo "<a href='./?I=" . pg_encrypt('WORKORDER-work|'.$value->id.'|'.$value->viewOnlyKey,$pg_encrypt_key,'encode') . "' class=\"btn btn-".$btncode."\">VIEW</a>"; ?></h4></td>
                                 <td><?php echo $value->formName; ?></td>
                                 <td style="color:#<?php echo $color; ?>"><?php echo $approveState_val; ?></td>
                                 

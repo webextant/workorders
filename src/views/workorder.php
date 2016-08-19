@@ -15,10 +15,10 @@
     require_once('./resources/library/workorder.php');
     require_once './resources/library/collaborator.php';
     require_once('./config/db.php');
-    $woDbAdapter = new WorkorderDataAdapter(DB_DSN, DB_USER, DB_PASS, $_SESSION['user_email']);
+    $woDbAdapter = new WorkorderDataAdapter($dsn, $user_name, $pass_word, $_SESSION['user_email']);
     $wo = $woDbAdapter->Select($id);
     $woViewModel = new WorkorderViewModel($wo, $key);
-    $collabViewModel = new CollaboratorViewModel(DB_DSN, DB_USER, DB_PASS, $_SESSION['user_email']);
+    $collabViewModel = new CollaboratorViewModel($dsn, $user_name, $pass_word, $_SESSION['user_email']);
 
     $acceptBtnText = "APPROVE (not final)";
     $rejectBtnText = "DENY";
@@ -92,12 +92,10 @@
                     <div class="col-lg-3"></div>
                     <div class="col-lg-6">
                     <?php if ($woViewModel->valid) { ?>
-                        <div class='jumbotron well'>
-                            <div class="<?=$woViewModel->stateColorClass?>"><?=$woViewModel->approveState . " (" . $wo->currentApprover . ")"?></div>
-                            <div class="alert alert-info">
-                                <h4><span class="fa fa-user" aria-hidden="true" /> Requested By</h4>
-                                <span><?=$wo->createdBy?></span>
-                            </div>
+                        <div class="<?=$woViewModel->stateColorClass?>"><?=$woViewModel->approveState . " (" . $wo->currentApprover . ")"?></div>
+                        <div class="alert alert-info">
+                            <h4><span class="fa fa-user" aria-hidden="true" /> Requested By</h4>
+                            <span><?=$wo->createdBy?></span>
                         </div>
                         <div id="collaboratorInfo" class="alert alert-success">
                             <form id="addcollabform" action="./?I=<?=pg_encrypt('WORKORDER-collab|'.$wo->id."|".$wo->approverKey,$pg_encrypt_key,'encode')?>" method="post">
@@ -209,7 +207,12 @@
     </div>
     <!-- /#wrapper -->
 
-    <?php require_once('./includes/jsbs.php'); ?>
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+    <!-- underscore -->
+    <script src="js/underscore-min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
 
     <script src="js/library/collaborator.js" ></script>
     <script>

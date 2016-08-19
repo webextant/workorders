@@ -49,8 +49,8 @@
                             <tr>
                                 <td><h4><?php echo  $value->createdAt; ?></h4></td>
                                 <td><h4><?php echo  $value->currentApprover; ?></h4></td>
-                                <td><h4><?php echo  $value->formName; ?></h4></td>
-                                <td><h4><?php echo "<a href='./workorderview.php?id=".$value->id."&key=" . $value->viewOnlyKey . "' class=\"btn btn-primary\">VIEW</a>"; ?></h4></td>
+                                <td><h4><?php echo  $value->formName; ?></h4></td>								
+                                <td><h4><?php echo "<a href='./?I=" . pg_encrypt('WORKORDER-work|'.$value->id.'|'.$value->viewOnlyKey,$pg_encrypt_key,'encode') . "' class=\"btn btn-primary\">VIEW</a>"; ?></h4></td>
 							</tr>
                             <?php	
 						
