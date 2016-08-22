@@ -40,6 +40,15 @@
         public $createdAt;
         public $createdBy;
     }
+
+    /** Used when working with collaborators on a workorder */
+    class WorkorderCollaborator
+    {
+        public $user_id;
+        public $user_fname;
+        public $user_lname;
+        public $user_email;
+    }
     
     /** Defines workorder data in context of a view/page */
     class WorkorderViewModel
@@ -60,10 +69,12 @@
         public $finalApproverEmail;
         public $formData;
         public $hasCollaborator;
+        public $currentCollaborators;
         public $collaboratorStateColorCode;
         public $collaboratorStateClass;
         public $isClosed;
         public $userIsCurrentApprover;
+        public $userIsCollaborator;
 
         private $formXmlData;
         
@@ -77,7 +88,7 @@
                 $this->CompileViewData();
                 $this->workorderIdText = "Workorder #" . $workorder->id;
                 $this->SetApproveState($workorder->approveState);
-                $this->SetCollaboratorState($workorder->collaborators);
+                $this->SetCollaboratorState($workorder->collaborators, $user_email);
                 $this->SetFinalApproval($workorder->workflow);
                 $this->VerifyCurrentUser($workorder, $user_email);
             } catch (Exception $e) {
@@ -95,6 +106,8 @@
                 else:
                     $this->userIsCurrentApprover = $wo->currentApprover == $user_email;
                 endif;
+            } else {
+                $this->userIsCurrentApprover = $wo->currentApprover == $user_email;
             }
         }
 
@@ -109,15 +122,29 @@
             }
         }
 
-        private function SetCollaboratorState($state)
+        private function SetCollaboratorState($state, $user_email)
         {
             if ($state == null)
             {
+                $this->currentCollaborators = null;
+                $this->userIsCollaborator = false;
                 $this->hasCollaborator = false;
                 $this->collaboratorStateColorCode = "#dff0d8";
                 $this->collaboratorStateClass = "alert alert-success";
             } else {
                 $this->hasCollaborator = true;
+                $this->currentCollaborators = json_decode($state, true);
+                if ($user_email == ""){
+                    $this->userIsCollaborator = false;
+                } else {
+                    $uIsInCollabs = false; // default
+                    foreach ($this->currentCollaborators as $key => $value) {
+                        if ($value['user_email'] == $user_email):
+                            $uIsInCollabs = true;
+                        endif;
+                    }
+                    $this->userIsCollaborator = $uIsInCollabs;
+                }
                 $this->collaboratorStateColorCode = "#fcf8e3";
                 $this->collaboratorStateClass = "alert alert-warning";
             }
@@ -544,9 +571,9 @@
             if ($this->currentUserEmail == null) {
                 throw new Exception("Operation requires user.", 1);
             }
-            $sql = "UPDATE Workorders SET formName = :formName, description = :description, formXml = :formXml, formData = :formData, currentApprover = :currentApprover, workflow = :workflow, approveState = :approveState, approverKey = :approverKey, viewOnlyKey = :viewOnlyKey, updatedAt = now(), updatedBy = :updatedBy, formId = :formId, notifyOnFinalApproval = :notifyOnFinalApproval, comments = :comments WHERE id = :id";
+            $sql = "UPDATE Workorders SET formName = :formName, description = :description, formXml = :formXml, formData = :formData, currentApprover = :currentApprover, workflow = :workflow, approveState = :approveState, approverKey = :approverKey, viewOnlyKey = :viewOnlyKey, updatedAt = now(), updatedBy = :updatedBy, formId = :formId, notifyOnFinalApproval = :notifyOnFinalApproval, comments = :comments, collaborators = :collaborators WHERE id = :id";
             $result = $this->conn->prepare($sql);
-            $status = $result->execute(array('formName' => $workorder->formName, 'description' => $workorder->description, 'formXml' => $workorder->formXml, 'formData' => $workorder->formData, 'currentApprover' => $workorder->currentApprover, 'workflow' => $workorder->workflow, 'approveState' => $workorder->approveState, 'approverKey' => $workorder->approverKey, 'viewOnlyKey' => $workorder->viewOnlyKey, 'updatedBy' => $this->currentUserEmail, 'formId' => $workorder->formId, 'notifyOnFinalApproval' => $workorder->notifyOnFinalApproval, 'comments' => $workorder->comments, 'id' => $workorderId ));
+            $status = $result->execute(array('formName' => $workorder->formName, 'description' => $workorder->description, 'formXml' => $workorder->formXml, 'formData' => $workorder->formData, 'currentApprover' => $workorder->currentApprover, 'workflow' => $workorder->workflow, 'approveState' => $workorder->approveState, 'approverKey' => $workorder->approverKey, 'viewOnlyKey' => $workorder->viewOnlyKey, 'updatedBy' => $this->currentUserEmail, 'formId' => $workorder->formId, 'notifyOnFinalApproval' => $workorder->notifyOnFinalApproval, 'comments' => $workorder->comments, 'collaborators' => $workorder->collaborators, 'id' => $workorderId ));
             return $status;
         }
         function UpdateFormData($workorderId, $formData)
@@ -558,6 +585,76 @@
             $result = $this->conn->prepare($sql);
             $status = $result->execute(array(':formData' => $formData, ':updatedBy' => $this->currentUserEmail, ':id' => $workorderId ));
             return $status;
+        }
+        function AddComment($workorderId, $commentText)
+        {
+            // Loads the workorder from db and updates the comment data.
+            if ($this->currentUserEmail == null || $workorderId == null || $commentText == null){
+                throw new Exception("Operation requires user.");
+            }
+            $wo = $this->Select($workorderId);
+            $woViewModel = new WorkorderViewModel($wo, "", $this->currentUserEmail);
+            var_dump($woViewModel->userIsCollaborator);
+            if (!$woViewModel->userIsCollaborator && !$woViewModel->userIsCurrentApprover){
+                throw new Exception("User cannot add comments at this time.");
+            }
+            // Update the comments
+            $comments = json_decode($wo->comments, true);
+            if ($comments == null) {
+                $comments = array();
+            }
+            $woComment = new WorkorderComment();
+            $woComment->commentData = $commentText;
+            $woComment->createdAt = date('Y-m-d H:i:s');
+            $woComment->createdBy = $this->currentUserEmail;
+            array_push($comments, $woComment);
+            $wo->comments = json_encode($comments);
+            
+            return $this->Update($workorderId, $wo);
+
+        }
+        function AddCollaborator($workorderId, $commentText, $collabId)
+        {
+            if ($this->currentUserEmail == null || $workorderId == null || $commentText == null){
+                throw new Exception("Operation requires user.");
+            }
+            // Loads the workorder from db and updates the comment data.
+            $wo = $this->Select($workorderId);
+
+            // Load collaborator data and add collab
+            $sql = "SELECT user_id, user_fname, user_lname, user_email FROM users WHERE user_id = :id AND collaborator > 0";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->setFetchMode(PDO::FETCH_CLASS, "WorkorderCollaborator");
+            $stmt->execute(array(':id' => $collabId));
+            $woCollab = $stmt->fetch(PDO::FETCH_CLASS);
+            if($woCollab == null){
+                throw new Exception("Collaborator not found.");
+            }
+            $collabs = json_decode($wo->collaborators, true);
+            if ($collabs == null){
+                $collabs = array();
+            }
+            $collabExist = array_search($collabId, array_column($collabs, 'user_id'));
+            if ($collabExist == false){
+                array_push($collabs, $woCollab);
+                $wo->collaborators = json_encode($collabs);
+            } else {
+                throw new exception("user already assigned as a collaborator.");
+            }
+            // Update the comments
+            $comments = json_decode($wo->comments, true);
+            if ($comments == null) {
+                $comments = array();
+            }
+            $woComment = new WorkorderComment();
+            $woComment->commentData = $commentText;
+            $woComment->createdAt = date('Y-m-d H:i:s');
+            $woComment->createdBy = $this->currentUserEmail;
+            array_push($comments, $woComment);
+            $wo->comments = json_encode($comments);
+            
+            return $this->Update($workorderId, $wo);
+
         }
         function Delete($workorderId)
         {

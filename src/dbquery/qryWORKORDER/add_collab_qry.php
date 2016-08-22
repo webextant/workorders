@@ -5,16 +5,21 @@ Author: Raymond Brady
 Date Created: 8/16/2016
 ************************************************************************************************/
 require_once('./resources/library/workorder.php');
-require_once('./resources/library/pacman.php');
 
 $element = "Workorder";
 $element_function = "updated";
 
+if (!isset($_SESSION['user_email']) || !isset($_POST['id']) || !isset($_POST['key']) || !isset($_POST['collabcomment']) || !isset($_POST['collabUserSelect'])) {
+    $QUERY_PROCESS = "ERROR|Required fields are missing.";
+    return;
+}
 // Gather data, process POST, and update the workorder with collaborator
-$currentUserEmail = $_SESSION['user_email'];
-//$formPostHandler = new Pacman($_POST); // form post handler now supports compiling updated workorder data.
-//$workorderDataAdapter = new WorkorderDataAdapter($dsn, $user_name, $pass_word, $currentUserEmail);
+$currentUserEmail = filter_var($_SESSION['user_email'], FILTER_SANITIZE_EMAIL);
+$id = filter_var(trim($_POST['id']), FILTER_SANITIZE_NUMBER_INT);
+$key = filter_var(trim($_POST['key']), FILTER_SANITIZE_STRING);
+$comment = filter_var(trim($_POST['collabcomment']), FILTER_SANITIZE_STRING);
+$collabUser = filter_var(trim($_POST['collabUserSelect']), FILTER_SANITIZE_NUMBER_INT);
 
-$QUERY_PROCESS =  ""; //$workorderDataAdapter->UpdateFormData($formPostHandler->woId, $formPostHandler->asJSON());
-
+$workorderDataAdapter = new WorkorderDataAdapter($dsn, $user_name, $pass_word, $currentUserEmail);
+$QUERY_PROCESS = $workorderDataAdapter->AddCollaborator($id, $comment, $collabUser);
 ?>

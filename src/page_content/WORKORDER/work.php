@@ -11,7 +11,7 @@ Date Created: 8/16/2016
     $approveKey = $header_GET_array[1];
     $woDbAdapter = new WorkorderDataAdapter($dsn, $user_name, $pass_word);
     $wo = $woDbAdapter->Select($woId);
-    $woViewModel = new WorkorderViewModel($wo, $approveKey);
+    $woViewModel = new WorkorderViewModel($wo, $approveKey, $_SESSION['user_email']);
     $collabViewModel = new CollaboratorViewModel($dsn, $user_name, $pass_word, $_SESSION['user_email']);
 
     $acceptBtnText = "APPROVE (not final)";
@@ -26,6 +26,12 @@ Date Created: 8/16/2016
         echo '<div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> Unable to view the workorder. You may not be authorized...</div>';
         die();
     endif;
+
+    if ($woViewModel->hasCollaborator){
+        $addCollabFormPostType = pg_encrypt("qryWORKORDER-add_comment_qry",$pg_encrypt_key,"encode");        
+    } else {
+        $addCollabFormPostType = pg_encrypt("qryWORKORDER-add_collab_qry",$pg_encrypt_key,"encode");
+    }
 ?>
     <!-- Page row 1 -->
     <div class="row">
@@ -60,20 +66,31 @@ Date Created: 8/16/2016
         <div class="col-lg-3"></div>
         <div class="col-lg-6">
             <div class="<?=$woViewModel->stateColorClass?>"><?=$woViewModel->approveState . " (" . $wo->currentApprover . ")"?></div>
-<?php if(!$woViewModel->isClosed && $woViewModel->userIsCurrentApprover): ?>
+<?php if(!$woViewModel->isClosed && ($woViewModel->userIsCurrentApprover || $woViewModel->userIsCollaborator)): ?>
             <div id="collaboratorInfo" class="<?=$woViewModel->collaboratorStateClass?>">
                 <i class="fa fa-info-circle" style="float:right;" aria-hidden="true" title="Collaborator can view and comment on this work item." ></i>
                 <h4><i class="fa fa-users" aria-hidden="true" ></i> Collaborator</h4>
     <?php if($woViewModel->hasCollaborator): ?>
-                    <p>$wo-collaborators</p>
-    <?php else: ?>
-                    <form id="addcollabform" action="./?I=<?=pg_encrypt('WORKORDER-work|'.$wo->id."|".$wo->approverKey,$pg_encrypt_key,'encode')?>" method="post">
-                        <input type="hidden" id="post_type" name="post_type" value="<?php echo pg_encrypt("qryWORKORDER-add_collab_qry",$pg_encrypt_key,"encode") ?>" />
-                        <select id="collabUserSelect" name="collabUserSelect" class="form-control">
-                            <option value="" disabled selected hidden>Select a Collaborator</option>
-                        </select>
-                    </form>
+                    <?php
+                        foreach ($woViewModel->currentCollaborators as $key => $value):
+                            $fname = $value['user_fname'];
+                            $lname = $value['user_lname'];
+                            $email = $value['user_email'];
+                            echo "<p>$fname $lname ($email)</p>";
+                        endforeach;
+                    ?>
     <?php endif; ?>
+                <form id="addcollabform" action="./?I=<?=pg_encrypt('WORKORDER-work|'.$wo->id."|".$wo->approverKey,$pg_encrypt_key,'encode')?>" method="post">
+                    <input type="hidden" id="post_type" name="post_type" value="<?php echo $addCollabFormPostType ?>" />
+                    <input type="hidden" id="id" name="id" value="<?=$wo->id?>" />
+                    <input type="hidden" id="key" name="key" value="<?=$approveKey?>" />
+                    <input type="hidden" id="collabcomment" name="collabcomment" value="" />
+                  <?php if(!$woViewModel->hasCollaborator): ?>
+                    <select id="collabUserSelect" name="collabUserSelect" class="form-control">
+                        <option value="" disabled selected hidden>Select a Collaborator</option>
+                    </select>
+                  <?php endif; ?>
+                </form>
             </div>
 <?php endif; ?>
             <?php 
@@ -105,8 +122,8 @@ Date Created: 8/16/2016
             ?>
 
             <hr/>
-<?php if(!$woViewModel->isClosed && $woViewModel->userIsCurrentApprover): ?>
-            <form id="updateworkorder" action="./?I=<?=pg_encrypt('WORKORDER-work|'.$wo->id."|".$wo->approverKey,$pg_encrypt_key,'encode')?>" method="post">
+<?php if(!$woViewModel->isClosed && ($woViewModel->userIsCurrentApprover || $woViewModel->userIsCollaborator)): ?>
+            <form id="updateworkorder" action="./?I=<?=pg_encrypt('APPROVAL-needs_approval|'.$wo->id."|".$wo->approverKey,$pg_encrypt_key,'encode')?>" method="post">
                 <div class="form-group">
                     <input type="hidden" id="post_type" name="post_type" value="<?php echo pg_encrypt("qryWORKORDER-update_approve_qry",$pg_encrypt_key,"encode") ?>" />
                     <input type="hidden" name="id" value="<?php echo $wo->id; ?>">
@@ -119,7 +136,7 @@ Date Created: 8/16/2016
                 <div class="row">
                     <div id="approve-btn-group" class="col-xs-12">
                         <button id="save-comment-btn" type="button" class="btn btn-success">Save Comment</button>
-                        <button id="finish-collab-btn" type="button" class="btn btn-danger pull-right">Finished Collaborating</button>
+                        <button id="finish-collab-btn" type="button" class="btn btn-danger pull-right">End Collaboration</button>
                         <a href="index.php?I=<?php echo pg_encrypt("WORKORDER-edit|".$wo->id."|".$approveKey,$pg_encrypt_key,"encode"); ?>" type="button" class="btn btn-primary">Edit Workorder</a>
                     </div>
                 </div>
@@ -168,6 +185,12 @@ Date Created: 8/16/2016
     <script src="js/library/collaborator.js" ></script>
     <script>
         var cvm = new CollaboratorViewModel(<?=json_encode($collabViewModel->collabUsers)?>);
+        var submitCollabComments = function(){
+            var comment = jQuery('#comment').val();
+            jQuery('#collabcomment').val(comment);
+            jQuery('#addcollabform').submit();
+        };
+
         cvm.connectSelectElement("collabUserSelect")
         cvm.subscribeCollabChanged(function(e){
             console.log(e);
@@ -182,8 +205,7 @@ Date Created: 8/16/2016
         jQuery('#collab-clear-btn').click(function(){
             cvm.clearCollab();
         });
-        jQuery('#collab-save-btn').click(function(){
-            jQuery('#addcollabform').submit();
-        });
+        jQuery('#collab-save-btn').click(submitCollabComments);
+        jQuery('#save-comment-btn').click(submitCollabComments);
 
     </script>
