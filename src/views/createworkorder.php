@@ -41,8 +41,11 @@
         ?>
         <!-- Render Form from post data -->
         <?php
+        $illegalGroupChars = array(" ", "/"); // Include illegal characters for group name.
+        $replaceIllegalGroupChars = "-"; // Group name is used for HTML element id's so replace illegal chars with this char.
+
         $currentUserEmail = $_SESSION['user_email'];
-        $currentUserGroup = $_SESSION['user_group'];
+        $currentUserGroup = str_replace($illegalGroupChars, $replaceIllegalGroupChars, $_SESSION['user_group']);
         $hideFormClassString = "";
         $fromEmailAddress = 'noreply@dumasisd.org';
         $formSubmissionMessage = "";
@@ -75,8 +78,8 @@
                     $approvers = ApproverHelper::NewApproverArrayFromEmailArray($approverArray);
                     // Get the groupWorkflow for the users group
                     $groupWorkflows = $form['GroupWorkflows'];
-                    $groupWorkflows = json_decode($groupWorkflows);
-                    $userGroupApproverArray = $groupWorkflows->$currentUserGroup;
+                    $groupWorkflows = json_decode($groupWorkflows, true);
+                    $userGroupApproverArray = $groupWorkflows[$currentUserGroup];
                     $groupApprovers = ApproverHelper::NewApproverArrayFromEmailArray($userGroupApproverArray);
                     // merge the approver arrays with group first and create the workflow for the form
                     $mergedApprovers = ApproverHelper::MergeApproverArrays($groupApprovers, $approvers);
