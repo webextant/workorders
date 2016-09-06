@@ -136,8 +136,10 @@ Date Created: 8/16/2016
                 <div class="row">
                     <div id="approve-btn-group" class="col-xs-12">
                         <button id="save-comment-btn" type="button" class="btn btn-success">Save Comment</button>
-                        <button id="finish-collab-btn" type="button" class="btn btn-danger pull-right">End Collaboration</button>
+                    <?php if ($woViewModel->userIsCurrentApprover): ?>
                         <a href="index.php?I=<?php echo pg_encrypt("WORKORDER-edit|".$wo->id."|".$approveKey,$pg_encrypt_key,"encode"); ?>" type="button" class="btn btn-primary">Edit Workorder</a>
+                        <button id="finish-collab-btn" type="button" class="btn btn-danger pull-right">End Collaboration</button>
+                    <?php endif; ?>
                     </div>
                 </div>
     <?php elseif(!$woViewModel->hasCollaborator && !$woViewModel->isClosed): ?>
@@ -154,6 +156,14 @@ Date Created: 8/16/2016
                 </div>
     <?php endif; ?>
             </form>
+            <?php if ($woViewModel->userIsCurrentApprover): ?>
+                <form id="endcollaborationform" action="./?I=<?=pg_encrypt('WORKORDER-work|'.$wo->id."|".$wo->approverKey,$pg_encrypt_key,'encode')?>" method="post">
+                    <input type="hidden" id="post_type" name="post_type" value="<?php echo pg_encrypt("qryWORKORDER-end_collab_qry",$pg_encrypt_key,"encode") ?>" />
+                    <input type="hidden" name="id" value="<?php echo $wo->id; ?>">
+                    <input type="hidden" name="key" value="<?php echo $approveKey; ?>">
+                    <input type="hidden" id="endcollabcomment" name="endcollabcomment" value="">
+                </form>
+            <?php endif; ?>
 <?php endif; ?>
         </div>
         <div class="col-lg-3"></div>
@@ -190,6 +200,12 @@ Date Created: 8/16/2016
             jQuery('#collabcomment').val(comment);
             jQuery('#addcollabform').submit();
         };
+        var endCollaboration = function(){
+            console.log("Ending collab");
+            var comment = jQuery('#comment').val();
+            jQuery('#endcollabcomment').val(comment);
+            jQuery('#endcollaborationform').submit();            
+        };
 
         cvm.connectSelectElement("collabUserSelect")
         cvm.subscribeCollabChanged(function(e){
@@ -207,5 +223,6 @@ Date Created: 8/16/2016
         });
         jQuery('#collab-save-btn').click(submitCollabComments);
         jQuery('#save-comment-btn').click(submitCollabComments);
+        jQuery('#finish-collab-btn').click(endCollaboration);
 
     </script>

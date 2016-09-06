@@ -390,6 +390,91 @@
             return $woBody;
         }
         
+        // Sends detail view of workorder to creator, current approver, and current collaborator
+        public function SendUpdatedDetailsToAll($workorder, $woViewModel = null){
+            $toAddresses = [];
+            $collabs = json_decode($workorder->collaborators, true);
+            foreach ($collabs as $key => $value) {
+                if ($value['user_email'] != null){
+                    $toAddresses[] = $value['user_email'];
+                }
+            }
+            $toAddresses[] = $workorder->createdBy;
+            $toAddresses[] = $workorder->currentApprover;
+            $from = $this->fromaddress;
+            $to = $toAddresses;
+            $subject = $workorder->formName . " " . $workorder->id . " updated.";
+            $body = "<p>Greetings!</p><p>This item has been updated.</p>";
+            $body .= "<p>I'm just keeping you in the loop. You will receive another email when something changes.</p>";
+            $body .= "Regards,<br/>" . $from;
+            $body .= "<p>* This is an automated email. Please do not reply. Our robots are not trained to respond yet!</p>";
+            $body .= $this->RenderWorkorderDetailsStringAsHtml($workorder, $woViewModel);
+            $this->SendEmail($to, $from, $subject, $body);
+        }
+
+        // Sends detail view of workorder to creator, current approver, and current collaborator
+        public function SendUpdatedDetailsToCreator($workorder, $woViewModel = null){
+            $from = $this->fromaddress;
+            $to = $workorder->createdBy;
+            $subject = $workorder->formName . " " . $workorder->id . " updated.";
+            $body = "<p>Greetings!</p><p>This item has been updated.</p>";
+            $body .= "<p>I'm just keeping you in the loop. You will receive another email when something changes.</p>";
+            $body .= "Regards,<br/>" . $from;
+            $body .= "<p>* This is an automated email. Please do not reply. Our robots are not trained to respond yet!</p>";
+            $body .= $this->RenderWorkorderDetailsStringAsHtml($workorder, $woViewModel);
+            $this->SendEmail($to, $from, $subject, $body);
+        }
+
+        // Sends detail view of workorder to collaborators and approver
+        public function SendAddCollab($workorder, $woViewModel = null){
+            $toAddresses = [];
+            $collabList = [];
+            $collabs = json_decode($workorder->collaborators, true);
+            foreach ($collabs as $key => $value) {
+                if ($value['user_email'] != null){
+                    $toAddresses[] = $value['user_email'];
+                    $collabList[] = $value['user_email'];
+                }
+            }
+            $toAddresses[] = $workorder->currentApprover;
+            $from = $this->fromaddress;
+            $to = implode(",", $toAddresses);
+            $subject = "Collaboration request for " . $workorder->formName . " " . $workorder->id;
+            $body = "<p>Greetings!</p><p>The following people have been invited to collaborate on this item.</p>";
+            $body .= "<p>" . implode(",", $collabList) . "</p>";
+            $body .= "<p>I'm just keeping you in the loop. You will receive another email when something changes.</p>";
+            $body .= "Regards,<br/>" . $from;
+            $body .= "<p>* This is an automated email. Please do not reply. Our robots are not trained to respond yet!</p>";
+            $body .= $this->RenderWorkorderDetailsStringAsHtml($workorder, $woViewModel);
+            $this->SendEmail($to, $from, $subject, $body);
+        }
+
+        // Sends detail view of workorder to collaborators and approver
+        public function SendEndCollab($workorder, $woViewModel = null){
+            $toAddresses = [];
+            $collabList = [];
+            if ($workorder->collaborators != null){
+                $collabs = json_decode($workorder->collaborators, true);
+                foreach ($collabs as $key => $value) {
+                    if ($value['user_email'] != null){
+                        $toAddresses[] = $value['user_email'];
+                        $collabList[] = $value['user_email'];
+                    }
+                }
+            }
+            $toAddresses[] = $workorder->currentApprover;
+            $from = $this->fromaddress;
+            $to = implode(",", $toAddresses);
+            $subject = "Collaboration ended for " . $workorder->formName . " " . $workorder->id;
+            $body = "<p>Greetings!</p><p>Thanks for the assist! Collaboration has ended for the following people.</p>";
+            $body .= "<p>" . implode(",", $collabList) . "</p>";
+            $body .= "<p>I'm just keeping you in the loop. If further assistance is needed you will receive another email.</p>";
+            $body .= "Regards,<br/>" . $from;
+            $body .= "<p>* This is an automated email. Please do not reply. Our robots are not trained to respond yet!</p>";
+            $body .= $this->RenderWorkorderDetailsStringAsHtml($workorder, $woViewModel);
+            $this->SendEmail($to, $from, $subject, $body);
+        }
+
         public function SendNeedsApprovalToCurrentApprover($workorder, $woViewModel = null)
         {
             require_once "email.php"; // LinkHelper
@@ -397,7 +482,7 @@
             $from = $this->fromaddress;
             $to = $workorder->currentApprover;
             $subject = $workorder->formName . " " . $workorder->id . " needs your approval.";
-            $body = "<p>Hello " . $to . ",</p><p>You are the current approver for " . $workorder->formName . " " . $workorder->id . ". ";
+            $body = "<p>Greetings " . $to . ",</p><p>You are the current approver for " . $workorder->formName . " " . $workorder->id . ".</p>";
             $body .= "<p>Since you are the current approver you will be able to approve or reject the item. ";
             $body .= "Approval will send the item to the next listed approver. ";
             $body .= "If you are the final approver, the submitter will be notified of pending completion status. ";
@@ -405,6 +490,7 @@
             $body .= "<p>Click the link below to view " . $workorder->formName . " " . $workorder->id . "</p>";
             $body .= "<p>" . $approverLink . "</p>";
             $body .= "Regards,<br/>" . $from;
+            $body .= "<p>* This is an automated email. Please do not reply. Our robots are not trained to respond yet!</p>";
             $body .= $this->RenderWorkorderDetailsStringAsHtml($workorder, $woViewModel);
             $this->SendEmail($to, $from, $subject, $body);
         }
@@ -416,12 +502,13 @@
             $from = $this->fromaddress;
             $to = $workorder->createdBy;
             $subject = $workorder->formName . " " . $workorder->id . " created.";
-            $body = "<p>Hello " . $to . ",</p>Your request has been submitted.</p>";
+            $body = "<p>Greetings " . $to . ",</p><p>Your request has been submitted.</p>";
             $body .= "<p>You created this item and will be able to view status and changes anytime. ";
             $body .= "You will receive another email when something changes. ";
             $body .= "Click the link below to view " . $workorder->formName . " " . $workorder->id . "</p>";
             $body .= "<p>" . $viewonlyLink . "</p>";
             $body .= "Regards,<br/>" . $from;
+            $body .= "<p>* This is an automated email. Please do not reply. Our robots are not trained to respond yet!</p>";
             $body .= $this->RenderWorkorderDetailsStringAsHtml($workorder, $woViewModel);
             $this->SendEmail($to, $from, $subject, $body);
         }
@@ -433,10 +520,11 @@
             $from = $this->fromaddress;
             $to = $workorder->createdBy;
             $subject = $workorder->formName . " " . $workorder->id . " has been rejected.";
-            $body = "<p>Hello " . $to . ",</p>" . $workorder->formName . " " . $workorder->id . " has been rejected.</p>";
+            $body = "<p>Greetings " . $to . ",</p><p>" . $workorder->formName . " " . $workorder->id . " has been rejected.</p>";
             $body .= "<p>Click the link below to view " . $workorder->formName . " " . $workorder->id . "</p>";
             $body .= "<p>" . $viewonlyLink . "</p>";
             $body .= "Regards,<br/>" . $from;
+            $body .= "<p>* This is an automated email. Please do not reply. Our robots are not trained to respond yet!</p>";
             $body .= $this->RenderWorkorderDetailsStringAsHtml($workorder, $woViewModel);
             $this->SendEmail($to, $from, $subject, $body);
         }
@@ -451,10 +539,12 @@
                 $to = $workorder->createdBy . ", " . $workorder->notifyOnFinalApproval;
             }
             $subject = $workorder->formName . " " . $workorder->id . " Approved and completed";
+            $body = "<p>Greetings " . $to . ",</p>";
             $body = "<p>" . $workorder->formName . " " . $workorder->id . " has been completed.</p>";
             $body .= "<p>Click the link below to view " . $workorder->formName . " " . $workorder->id . "</p>";
             $body .= "<p>" . $viewonlyLink . "</p>";
             $body .= "Regards,<br/>" . $from;
+            $body .= "<p>* This is an automated email. Please do not reply. Our robots are not trained to respond yet!</p>";
             $body .= $this->RenderWorkorderDetailsStringAsHtml($workorder, $woViewModel);
             $this->SendEmail($to, $from, $subject, $body);            
         }
@@ -555,6 +645,19 @@
             $workorders = $stmt->fetchAll(PDO::FETCH_CLASS);
             return $workorders;
         }
+		/***********************/
+        function SelectAllWhereCollaborator($limit = 100)
+        {
+            if ($this->currentUserEmail == null) {
+                throw new Exception("Operation requires user.", 1);
+            }
+            $sql = "SELECT * FROM Workorders WHERE collaborators like :collabEmail ORDER BY createdAt DESC LIMIT :limit";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->setFetchMode(PDO::FETCH_CLASS, "Workorder");
+            $stmt->execute(array(':collabEmail' => '%'.$this->currentUserEmail.'%', ':limit' => $limit));
+            $workorders = $stmt->fetchAll(PDO::FETCH_CLASS);
+            return $workorders;
+        }
         function Insert($workorder)
         {
             if ($this->currentUserEmail == null) {
@@ -594,7 +697,6 @@
             }
             $wo = $this->Select($workorderId);
             $woViewModel = new WorkorderViewModel($wo, "", $this->currentUserEmail);
-            var_dump($woViewModel->userIsCollaborator);
             if (!$woViewModel->userIsCollaborator && !$woViewModel->userIsCurrentApprover){
                 throw new Exception("User cannot add comments at this time.");
             }
@@ -615,10 +717,16 @@
         }
         function AddCollaborator($workorderId, $commentText, $collabId)
         {
-            if ($this->currentUserEmail == null || $workorderId == null || $commentText == null){
+            if ($this->currentUserEmail == null){
                 throw new Exception("Operation requires user.");
             }
-            // Loads the workorder from db and updates the comment data.
+            if ($workorderId == null){
+                throw new Exception("Operation requires workorder id.");
+            }
+            if ($commentText == null){
+                throw new Exception("Operation requires comment text.");
+            }
+            // Loads the workorder from db.
             $wo = $this->Select($workorderId);
 
             // Load collaborator data and add collab
@@ -641,6 +749,36 @@
             } else {
                 throw new exception("user already assigned as a collaborator.");
             }
+            // Update the comments
+            $comments = json_decode($wo->comments, true);
+            if ($comments == null) {
+                $comments = array();
+            }
+            $woComment = new WorkorderComment();
+            $woComment->commentData = $commentText;
+            $woComment->createdAt = date('Y-m-d H:i:s');
+            $woComment->createdBy = $this->currentUserEmail;
+            array_push($comments, $woComment);
+            $wo->comments = json_encode($comments);
+            
+            return $this->Update($workorderId, $wo);
+
+        }
+        function EndCollaboration($workorderId, $commentText)
+        {
+            if ($this->currentUserEmail == null){
+                throw new Exception("Operation requires user");
+            }
+            if ($workorderId == null){
+                throw new Exception("Operation requires workorder Id");
+            }
+            if ($commentText == null){
+                throw new Exception("Operation requires comment text.");
+            }
+            // Loads the workorder from db.
+            $wo = $this->Select($workorderId);
+            // Set collaborators field to null
+            $wo->collaborators = null;
             // Update the comments
             $comments = json_decode($wo->comments, true);
             if ($comments == null) {

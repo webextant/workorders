@@ -97,16 +97,6 @@
                             <h4><span class="fa fa-user" aria-hidden="true" /> Requested By</h4>
                             <span><?=$wo->createdBy?></span>
                         </div>
-                        <div id="collaboratorInfo" class="alert alert-success">
-                            <form id="addcollabform" action="./?I=<?=pg_encrypt('WORKORDER-collab|'.$wo->id."|".$wo->approverKey,$pg_encrypt_key,'encode')?>" method="post">
-                                <input type="hidden" id="post_type" name="post_type" value="<?php echo pg_encrypt("qryWORKORDER-add_collab_qry",$pg_encrypt_key,"encode") ?>" />
-                                <i class="fa fa-info-circle" style="float:right;" aria-hidden="true" title="Collaborator can view and comment on this work item." ></i>
-                                <h4><i class="fa fa-users" aria-hidden="true" ></i> Collaborator</h4>
-                                <select id="collabUserSelect" name="collabUserSelect" class="form-control">
-                                    <option value="" disabled selected hidden>Select a Collaborator</option>
-                                </select>
-                            </form>
-                        </div>
                         <?php 
                             foreach ($woViewModel->fieldData as $fieldkey => $value) {
                                 echo "<h4>" . $value["Label"] . "</h4>";
@@ -214,28 +204,6 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
-    <script src="js/library/collaborator.js" ></script>
-    <script>
-        var cvm = new CollaboratorViewModel(<?=json_encode($collabViewModel->collabUsers)?>);
-        cvm.connectSelectElement("collabUserSelect")
-        cvm.subscribeCollabChanged(function(e){
-            console.log(e);
-            if (e.hasSelection){
-                jQuery("#approve-btn-group").hide();
-                jQuery("#save-collab-btn-group").show();
-            } else {
-                jQuery("#save-collab-btn-group").hide();
-                jQuery("#approve-btn-group").show();
-            }
-        });
-        jQuery('#collab-clear-btn').click(function(){
-            cvm.clearCollab();
-        });
-        jQuery('#collab-save-btn').click(function(){
-            jQuery('#addcollabform').submit();
-        });
-
-    </script>
 </body>
 
 </html>

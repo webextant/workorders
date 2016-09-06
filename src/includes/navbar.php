@@ -39,21 +39,24 @@
                 <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Home</a>
             </li>
             <li id="newWorkorderNavbarItem">
-                <a href="index.php?I=<?php echo pg_encrypt("WORKORDER-create",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-file"></i> New Workorder</a>
+                <a href="index.php?I=<?php echo pg_encrypt("WORKORDER-create",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-file"></i>&nbsp;New Workorder</a>
+            </li>
+            <li>
+                <a href="index.php?I=<?php echo pg_encrypt("COLLAB-current_collab",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-users"></i>&nbsp;Needs Your Help</a>
             </li>
             <!-- Approver Center -->    
-            <li  > <a style="color:#0DE447" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#APPROVAL"><i class="fa fa-fw fa-thumbs-up"></i>Approval Center<i class="fa fa-fw fa-caret-down"></i></a>
+            <li><a style="color:#0DE447" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#APPROVAL"><i class="fa fa-fw fa-thumbs-up"></i>&nbsp;Approval Center<i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="APPROVAL" class="<?php if($folder == "APPROVAL") echo "show"; else echo "collapse"; ?>">
                     <?php
 					   if($_SESSION['user_perms'] <=2){
 					?>
-                    <li> <a href="index.php?I=<?php echo pg_encrypt("APPROVAL-needs_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-thumbs-o-up"></i>Needs Approved</a> </li>
+                    <li><a href="index.php?I=<?php echo pg_encrypt("APPROVAL-needs_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-thumbs-o-up"></i>&nbsp;Needs Approved</a> </li>
                     <?php
 					   }
 					?>
                     
-                    <li> <a href="index.php?I=<?php echo pg_encrypt("APPROVAL-pending_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-arrow-right"></i>Approvals In Progress</a> </li>
-                    <li> <a href="index.php?I=<?php echo pg_encrypt("APPROVAL-closed_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-check"></i>Closed / Workorders</a> </li>
+                    <li><a href="index.php?I=<?php echo pg_encrypt("APPROVAL-pending_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-arrow-right"></i>&nbsp;Approvals In Progress</a> </li>
+                    <li><a href="index.php?I=<?php echo pg_encrypt("APPROVAL-closed_approval",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-check"></i>&nbsp;Closed / Workorders</a> </li>
                     
                 </ul>
             </li> 
@@ -61,20 +64,20 @@
 			   if($_SESSION['user_perms'] == 1){
 			?>
             <!-- Admin Center -->    
-            <li  > <a style="color:#F0FF00" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#ADMIN"><i class="fa fa-fw fa-cog"></i>Admin Center<i class="fa fa-fw fa-caret-down"></i></a>
+            <li><a style="color:#F0FF00" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#ADMIN"><i class="fa fa-fw fa-cog"></i>&nbsp;Admin Center<i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="ADMIN" class="<?php if($folder == "ADMIN") echo "show"; else echo "collapse"; ?>">
-                    <li> <a href="index.php?I=<?php echo pg_encrypt("ADMIN-forms_admin",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-edit"></i>Form Builder </a> </li>
-                    <li> <a  tabindex="-1"href="index.php?I=<?php echo pg_encrypt("ADMIN-list_user",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-user"></i>Users </a> </li>
-                    <li> <a  tabindex="-1"href="index.php?I=<?php echo pg_encrypt("ADMIN-list_groups",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-user"></i>Groups </a> </li>
+                    <li> <a href="index.php?I=<?php echo pg_encrypt("ADMIN-forms_admin",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-edit"></i>&nbsp;Form Builder </a> </li>
+                    <li> <a  tabindex="-1"href="index.php?I=<?php echo pg_encrypt("ADMIN-list_user",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-user"></i>&nbsp;Users </a> </li>
+                    <li> <a  tabindex="-1"href="index.php?I=<?php echo pg_encrypt("ADMIN-list_groups",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-user"></i>&nbsp;Groups </a> </li>
                     <li id="settingsNavbarItem">
                     <!-- <a href="settings.php"><i class="fa fa-fw fa-wrench"></i> Settings</a> -->
                     </li> 
                 </ul>
             </li> 
             
-            <li  > <a style="color:#F0FF00" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#SETTINGS"><i class="fa fa-fw fa-cog"></i>Settings Center<i class="fa fa-fw fa-caret-down"></i></a>
+            <li><a style="color:#F0FF00" tabindex="-1" href="javascript:;" data-toggle="collapse" data-target="#SETTINGS"><i class="fa fa-fw fa-cog"></i>&nbsp;Settings Center<i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="SETTINGS" class="<?php if($folder == "SETTINGS") echo "show"; else echo "collapse"; ?>">
-                    <li> <a href="index.php?I=<?php echo pg_encrypt("SETTINGS-registration_settings",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-cog"></i>Registration Settings</a> </li>
+                    <li> <a href="index.php?I=<?php echo pg_encrypt("SETTINGS-registration_settings",$pg_encrypt_key,"encode"); ?>"><i class="fa fa-fw fa-cog"></i>&nbsp;Registration Settings</a> </li>
                 </ul>
             </li>  
             
@@ -89,11 +92,11 @@
     <!-- Top Menu Items -->
     <ul class="nav navbar-right top-nav">
         <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> ACCOUNT<b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>&nbsp;ACCOUNT<b class="caret"></b></a>
             <ul class="dropdown-menu">
                
                 <li>
-                    <a href="index.php"><i class="fa fa-fw fa-power-off"></i> Log In</a>
+                    <a href="index.php"><i class="fa fa-fw fa-power-off"></i>&nbsp;Log In</a>
                 </li>
             </ul>
         </li>
