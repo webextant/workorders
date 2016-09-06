@@ -98,6 +98,7 @@ Date Created: 8/17/2016
     if ($approve == "true") {
         if ($isFinalApprover != true) {
             $emailAdapter->SendNeedsApprovalToCurrentApprover($wo, $woViewModel);
+            $emailAdapter->SendUpdatedDetailsToCreator($wo, $woViewModel);
         }
         if ($sendFinalApproveNotifications == true) {
             $emailAdapter->SendViewOnlyFinalApprovalNotifications($wo, $woViewModel);        
