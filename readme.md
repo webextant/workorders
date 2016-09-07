@@ -1,4 +1,4 @@
-# Workorders v2.0.1
+# Workorders v2.1.0
 
 A simple way for large groups to organize work using custom forms!
 
@@ -15,3 +15,4 @@ A simple way for large groups to organize work using custom forms!
 * User registration can be limited based on domain.
 * Users can view work orders that need their approval.
 * Users can view work orders they have submitted.
+* Collaboration feature allows including others in the workflow process as needed. 

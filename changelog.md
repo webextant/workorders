@@ -1,4 +1,17 @@
 # CHANGE LOG
+**7 September 2016
+
+* Fix: Issue handling illegal characters in group names
+* Fix: Better handling of authorization when attempting to edit a workorder.
+* Fix: Corrent some spelling errors.
+* Improvement: Current approver can add collaborator to a workorder. * db changes see _update.
+* Improvement: Sends update email to workorder creator when something changes.
+* Improvement: Move workorder approve/edit into page_content and dbquery routing structure.
+* Improvement: Refactor php/html in several places for greater clarity.
+* Improvement: Add simple pubsub javascript library for easy frontend ui eventing.
+* Improvement: Move appconfig.php to /config/appconfig.php * just makes sense.
+* Improvement: Bump minor version
+
 **6 August 2016**
 
 * Fix: Pay engineering debt. forms_db_controller.php better follows data adapter pattern used in other classes.
