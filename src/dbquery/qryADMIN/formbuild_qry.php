@@ -13,10 +13,10 @@ $element_function = "Updated";
               $fdc = new FormsDataController($dsn, $user_name, $pass_word);
               $QUERY_PROCESS = $fdc->updateForm($_POST["id"], $_POST["formname"], $_POST["formdesc"], $_POST["xmldata"], $_POST["workflow"], $_POST["notifyOnFinalApproval"], $formAvailable, $_POST["groupWorkflows"]);
             } elseif (isset($_POST["deleteform"])) {
-              $fdc = new FormsDataController();
+              $fdc = new FormsDataController($dsn, $user_name, $pass_word);
               $QUERY_PROCESS = $fdc->deleteForm($_POST["id"]);
             } elseif (isset($_POST["addform"])) {
-              $fdc = new FormsDataController();
+              $fdc = new FormsDataController($dsn, $user_name, $pass_word);
               $QUERY_PROCESS = $fdc->addForm($_POST["formname"], $_POST["formdesc"], $_POST["xmldata"], $_POST["workflow"], $_POST["notifyOnFinalApproval"], $formAvailable, $_POST["groupWorkflows"]);
               if (!$QUERY_PROCESS){
                 echo "<div class='alert alert-danger'>All fields are required. Keep calm and try again...</div>";

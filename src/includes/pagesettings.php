@@ -37,31 +37,31 @@
 		if (isset($_POST["create_formdefinitions_table"])) {
 			echo "<h4>Create FormDefinitions Table Command - Results</h4>";
 			require "./resources/library/forms_db_controller.php";
-			$fdc = new FormsDataController();
+			$fdc = new FormsDataController($dsn, $user_name, $pass_word);
 			$fdc->createFormDefinitionsTable();
 		}
 		if (isset($_POST["create_formdata_table"])) {
 			echo "<h4>Create FormData Table Command - Results</h4>";
 			require "./resources/library/forms_db_controller.php";
-			$fdc = new FormsDataController();
+			$fdc = new FormsDataController($dsn, $user_name, $pass_word);
 			$fdc->createFormDataTable();
 		}
 		if (isset($_POST["show_formdefinitions_data"])) {
 			echo "<h4>Show FormDefinitions Data - Results</h4>";
 			require "./resources/library/forms_db_controller.php";
-			$fdc = new FormsDataController();
+			$fdc = new FormsDataController($dsn, $user_name, $pass_word);
 			$fdc->renderFormDefinitionsData();
 		}
 		if (isset($_POST["save_form_xml"])) {
 			echo "<h4>Save Form XML Data - Results</h4>";
 			require "./resources/library/forms_db_controller.php";
-			$fdc = new FormsDataController();
+			$fdc = new FormsDataController($dsn, $user_name, $pass_word);
 			$fdc->addForm($_POST["formname"], $_POST["description"], $_POST["formxml"]);
 		}
 		if (isset($_POST["drop_formdefinitions_table"])) {
 			echo "<h4>Drop Forms table - Results</h4>";
 			require "./resources/library/forms_db_controller.php";
-			$fdc = new FormsDataController();
+			$fdc = new FormsDataController($dsn, $user_name, $pass_word);
 			echo "Table was not dropped. Some code must be un-commented first...";
 			//$fdc->dropFormsTable();
 		}
