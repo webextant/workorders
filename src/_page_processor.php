@@ -2,7 +2,7 @@
 
 require_once("config/db.php");
 require_once("classes/Login.php");
-require_once('./resources/appconfig.php');
+require_once('config/appconfig.php');
 
 require_once "./resources/library/appinfo.php";
 $appInfoDbAdapter = new AppInfo($dsn, $user_name, $pass_word);

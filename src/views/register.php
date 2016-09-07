@@ -7,7 +7,7 @@
 ***************************************************/
 ?>
 <?php 
-	require_once('./resources/appconfig.php');
+	require_once('config/appconfig.php');
     require_once "./resources/library/user.php";
 
     $userAdapter = new UserDataAdapter($dsn, $user_name, $pass_word);

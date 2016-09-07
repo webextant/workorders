@@ -4,7 +4,7 @@
     *    Requires valid approver key before update.
    */
 
-    require_once('./resources/appconfig.php');
+    require_once('config/appconfig.php');
     require_once("./resources/library/appinfo.php");
     $appInfoDbAdapter = new AppInfo($dsn, $user_name, $pass_word);
     $system_version =$appInfoDbAdapter->Get('System Version');

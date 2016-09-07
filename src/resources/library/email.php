@@ -1,6 +1,6 @@
 <?php
     set_include_path(dirname(__FILE__).'/../');
-    require_once('appconfig.php');
+    require_once('config/appconfig.php');
 
     /**
      * Link generation utility. appconfig.php contains settings for base url and defult script names used in links.

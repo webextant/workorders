@@ -21,7 +21,7 @@ if (isset($login)) {
     }
 }
 ?>
-<?php require_once('./resources/appconfig.php') ?>
+<?php require_once('config/appconfig.php') ?>
 
 <!DOCTYPE html>
 <html >
@@ -100,7 +100,7 @@ if (isset($login)) {
 }
 ?>
 
-<?php require_once('./resources/appconfig.php') ?>
+<?php require_once('./config/appconfig.php') ?>
 <!DOCTYPE html>
 <html lang="en">
 

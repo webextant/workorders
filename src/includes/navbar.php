@@ -1,4 +1,4 @@
-<?php require_once('./resources/appconfig.php') ?>
+<?php require_once('config/appconfig.php') ?>
 <!-- Navigation -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <!-- Brand and toggle get grouped for better mobile display -->
